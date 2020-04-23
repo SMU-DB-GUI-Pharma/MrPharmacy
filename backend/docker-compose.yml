@@ -8,15 +8,15 @@ services:
     ports:
       - 3306:3306
     # persistant volume
-    volumes:
-      # ONLY ONE VOLUME SHOULD BE UNCOMMENTED
-      # this will store the volume in a docker chosen location on OS, it will be persistent. if you uncomment this line then you must do the same down 
-      #   for the "volumes:"" attribute below
-      - db_vol:/var/lib/mysql
-      # this will store the volume of the DB in a local path of your choosing, the file starts from the directory level of the docker-compose.yml file
-      #   so in this example it would be in the db folder in the backend folder, it will be persistent.
-      # - ./backend/mysql/db:/var/lib/mysql
-    # shared network
+    # volumes:
+    #   # ONLY ONE VOLUME SHOULD BE UNCOMMENTED
+    #   # this will store the volume in a docker chosen location on OS, it will be persistent. if you uncomment this line then you must do the same down 
+    #   #   for the "volumes:"" attribute below
+    #   - db_vol:/var/lib/mysql
+    #   # this will store the volume of the DB in a local path of your choosing, the file starts from the directory level of the docker-compose.yml file
+    #   #   so in this example it would be in the db folder in the backend folder, it will be persistent.
+    #   # - ./backend/mysql/db:/var/lib/mysql
+    # # shared network
     networks:
       - backend
 

@@ -139,13 +139,13 @@ VALUES
 ('Highmark Group', '35 North Mulberry Street', '#1001', ' Pittsburgh', 'Pennsylvania',  '37601', 'United States', '8462420038','highmark@email.com',  6);
 
 -- create user called `manager` with password `Password`
-CREATE USER 'root'@'%' IDENTIFIED BY 'Password';
+CREATE USER 'manager'@'%' IDENTIFIED BY 'password';
 
 -- give access to manager on db
-GRANT ALL PRIVILEGES ON MyPharma.* TO 'root'@'%';
+GRANT ALL PRIVILEGES ON MyPharma.* TO 'manager'@'%';
 
 -- set password method to native password for mysql workbench access (mysql 8 issue)
-ALTER USER 'root'@'%' IDENTIFIED WITH MYSQL_NATIVE_PASSWORD BY 'Password';
+ALTER USER 'manager'@'%' IDENTIFIED WITH MYSQL_NATIVE_PASSWORD BY 'password';
 
 -- flush them privileges
 FLUSH PRIVILEGES;
