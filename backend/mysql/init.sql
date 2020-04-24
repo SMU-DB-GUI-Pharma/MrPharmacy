@@ -2,8 +2,8 @@ CREATE DATABASE IF NOT EXISTS MrPharma;
 USE MrPharma;
 
 CREATE TABLE IF NOT EXISTS `MrPharma`.`User` (
-    InsuranceID INT NOT NULL AUTO_INCREMENT,
-	  PRIMARY KEY (InsuranceID),
+    UserID INT NOT NULL AUTO_INCREMENT,
+	  PRIMARY KEY (UserID),
     Username VARCHAR(45),
     Password VARCHAR(45),
     PinCode INT,

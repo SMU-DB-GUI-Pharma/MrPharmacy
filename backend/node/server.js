@@ -231,6 +231,14 @@ var connection = mysql.createConnection({
   database: 'MrPharma'
 });
 
+var del = connection._protocol._delegateError;
+connection._protocol._delegateError = function(err, sequence){
+  if (err.fatal) {
+    console.trace('fatal error: ' + err.message);
+  }
+  return del.call(this, err, sequence);
+};
+
 // require('./app/routes')(app, {});
 // app.listen(port, () => {
 //   console.log('We are live on ' + port);
@@ -271,12 +279,12 @@ app.get('/', (req, res) => {
 });
 
 //GET; For getting all of Pharmacy
-app.get('/pharmacy', function (req, res) {
-	con.query("SELECT * FROM Pharmacy", function (err, result, fields) {
-		if (err) { throw err;} 
-		res.end(JSON.stringify(result)); // Result in JSON format
-	});
-});
+// app.get('/pharmacy', function (req, res) {
+// 	connection.query("SELECT * FROM Pharmacy", function (err, result, fields) {
+// 		if (err) throw err;
+// 		res.end(JSON.stringify(result)); // Result in JSON format
+// 	});
+// });
 
 //POST /reset
 app.post('/reset', (req, res) => {
