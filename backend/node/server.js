@@ -216,8 +216,6 @@
 // });
 
 
-
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -226,12 +224,17 @@ const { log, ExpressAPILogMiddleware } = require('@rama41222/node-logger');
 
 //mysql connection
 var connection = mysql.createConnection({
-  host: 'backend-db',
+  host: 'mysql',
   port: '3306',
   user: 'manager',
   password: 'Password',
-  database: 'db'
+  database: 'MrPharma'
 });
+
+// require('./app/routes')(app, {});
+// app.listen(port, () => {
+//   console.log('We are live on ' + port);
+// });
 
 //set up some configs for express.
 const config = {
@@ -255,11 +258,11 @@ app.use(ExpressAPILogMiddleware(logger, { request: true }));
 //Attempting to connect to the database.
 connection.connect(function (err) {
   if (err){
-	logger.error("canNOT connect to DB");
+    logger.error("Cannot connect to DB!");
   }
-	else{
-		logger.info("Connected to DB!");
-	}
+  else{
+    logger.info("Connected to the DB!");
+  }
 });
 
 //GET /
