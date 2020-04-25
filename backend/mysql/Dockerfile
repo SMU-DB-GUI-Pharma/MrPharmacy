@@ -1,5 +1,5 @@
 # We are using MySQL 8
-FROM mysql:8
+FROM mysql:5.7
 
 # Establish MySQL DB as environment variable
 ENV MYSQL_DATABASE=MrPharma

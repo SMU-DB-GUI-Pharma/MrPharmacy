@@ -5,7 +5,7 @@ services:
     build: ./backend/mysql
     restart: always
     # ports to map, YOU CANNOT RUN ANYTHING ELSE ON PORT 3306
-    image: mysql:8
+    image: mysql:5.7
     environment:
       MYSQL_DATABASE: 'MrPharma'
       MYSQL_USER: 'manager'
