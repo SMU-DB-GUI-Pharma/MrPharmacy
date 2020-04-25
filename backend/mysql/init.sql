@@ -154,14 +154,14 @@ VALUES
 ('Gabapentin', '2020-03-15', 1, 0, 'An anticonvulsant medication used to treat partial seizures, neuropathic pain, hot flashes, and restless legs syndrome', 'This medicine helps me with my issues', 1, '2020-05-24', '12.99', '2020-09-01', 5, NULL, 8);
 
 -- create user called `manager` with password `Password`
-CREATE USER 'manager'@'backend-db' IDENTIFIED BY 'Password';
+-- CREATE USER 'manager'@'backend-db' IDENTIFIED BY 'Password';
 
--- give access to manager on db
-GRANT ALL PRIVILEGES ON *.* TO 'manager'@'%';
+-- -- give access to manager on db
+-- GRANT ALL PRIVILEGES ON *.* TO 'manager'@'%';
 
--- set password method to native password for mysql workbench access (mysql 8 issue)
-ALTER USER 'manager'@'backend-db' IDENTIFIED WITH MYSQL_NATIVE_PASSWORD BY 'Password';
+-- -- set password method to native password for mysql workbench access (mysql 8 issue)
+-- ALTER USER 'manager'@'backend-db' IDENTIFIED WITH MYSQL_NATIVE_PASSWORD BY 'Password';
 
--- flush them privileges
-FLUSH PRIVILEGES;
+-- -- flush them privileges
+-- FLUSH PRIVILEGES;
 
