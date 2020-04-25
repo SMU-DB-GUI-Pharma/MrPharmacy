@@ -84,19 +84,20 @@ app.get('/pharmacy', function (req, res) {
 	});
 });
 
-//User Story 5.2 [READ] - I want to be able to compare pharmacies
-app.get('/comparepharmacies/:pharm1/:pharm2', function (req, res) {
+//User Story 5.2 [READ] - I want to be able to compare pharmacies (compare by PharmacyID)
+app.get('/comparepharmacies/:pharm1/:pharm2/:pharm3', function (req, res) {
   console.log("INSIDE compare pharmacy API CALL");
   var pharmacyName1 = req.param('pharm1');
   var pharmacyName2 = req.param('pharm2');
-  connection.query("SELECT * FROM `MrPharma`.`Pharmacy` WHERE PharmacyName = ? UNION SELECT * FROM `MrPharma`.`Pharmacy` WHERE PharmacyName = ?;", 
-    [pharmacyName1, pharmacyName2], function (err, result, fields) {
+  var pharmacyName3 = req.param('pharm3');
+  connection.query("SELECT * FROM `MrPharma`.`Pharmacy` WHERE PharmacyID = ? UNION SELECT * FROM `MrPharma`.`Pharmacy` WHERE PharmacyID = ? UNION SELECT * FROM `MrPharma`.`Pharmacy` WHERE PharmacyID = ?;", 
+    [pharmacyName1, pharmacyName2, pharmacyName3], function (err, result, fields) {
 		if (err) throw err;
 		res.end(JSON.stringify(result)); // Result in JSON format
 	});
 });
 
-//User Story 5.3 [READ] I want to be able to choose a pharmacy for myself
+//User Story 5.3 [READ] I want to be able to choose a pharmacy for myself (choose by PharmacyName)
 app.get('/choosepharmacy/:pharmacy', function (req, res) {
   console.log("INSIDE choose pharmacy API CALL");
   var pharmacyName1 = req.param('pharmacy');
@@ -106,7 +107,7 @@ app.get('/choosepharmacy/:pharmacy', function (req, res) {
 	});
 });
 
-//User Story 5.4 [READ] I want to be able to contact pharmacies
+//User Story 5.4 [READ] I want to be able to contact pharmacies (choose by PharmacyName)
 app.get('/contactpharmacy/:pharmacy', function (req, res) {
   console.log("INSIDE choose pharmacy API CALL");
   var pharmacyName1 = req.param('pharmacy');
