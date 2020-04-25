@@ -1,15 +1,15 @@
+CREATE DATABASE IF NOT EXISTS MrPharma;
 USE MrPharma;
 
 --create user table
 CREATE TABLE IF NOT EXISTS `MrPharma`.`User` (
-    InsuranceID INT NOT NULL AUTO_INCREMENT,
-	  PRIMARY KEY (InsuranceID),
-    Username VARCHAR(45),
-    Password VARCHAR(45),
-    PinCode INT,
-    --'PharmacyID' INT,
-    TotalCostPrescriptions DECIMAL, 
-    MonthlyCost DECIMAL
+    `PinCode` INT NOT NULL AUTO_INCREMENT,
+	  PRIMARY KEY (PinCode),
+    `Username` VARCHAR(45),
+    `Password` VARCHAR(45),
+    `TotalCostPrescriptions` DECIMAL(10,2) NOT NULL, 
+    `MonthlyCost` DECIMAL(10,2) NOT NULL,
+    `FinancialReport` MEDIUMBLOB NULL
 );
 
 

@@ -45,6 +45,15 @@ app.get('/', (req, res) => {
 });
 
 //GET; return all of the prescription brands
+//1.2 [READ] prescriptions that run out and are no longer eligible for refills to be designated as a past prescription
+app.get('/prescriptionBrand', function (req, res) {
+	connection.query("SELECT * FROM PrescriptionBrand", function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
+
+//GET; 1.2 return all of the prescription brands
 app.get('/prescriptionBrand', function (req, res) {
 	connection.query("SELECT * FROM PrescriptionBrand", function (err, result, fields) {
 		if (err) throw err;
