@@ -5,18 +5,24 @@ services:
     build: ./backend/mysql
     restart: always
     # ports to map, YOU CANNOT RUN ANYTHING ELSE ON PORT 3306
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: 'MrPharma'
+      MYSQL_USER: 'manager'
+      MYSQL_PASSWORD: 'Password'
+    # persistant volume
+    command: --default-authentication-plugin=mysql_native_password
     ports:
       - 3306:3306
-    # persistant volume
-    #volumes:
-      # ONLY ONE VOLUME SHOULD BE UNCOMMENTED
-      # this will store the volume in a docker chosen location on OS, it will be persistent. if you uncomment this line then you must do the same down 
-      #   for the "volumes:"" attribute below
-      # - db_vol:/var/lib/mysql
-      # this will store the volume of the DB in a local path of your choosing, the file starts from the directory level of the docker-compose.yml file
-      #   so in this example it would be in the db folder in the backend folder, it will be persistent.
-      # - ./backend/mysql/db:/var/lib/mysql
-    # shared network
+    volumes:
+    #   # ONLY ONE VOLUME SHOULD BE UNCOMMENTED
+    #   # this will store the volume in a docker chosen location on OS, it will be persistent. if you uncomment this line then you must do the same down 
+    #   #   for the "volumes:"" attribute below
+       - db_vol:/var/lib/mysql
+    #   # this will store the volume of the DB in a local path of your choosing, the file starts from the directory level of the docker-compose.yml file
+    #   #   so in this example it would be in the db folder in the backend folder, it will be persistent.
+    #   - ./backend/mysql/db:/var/lib/mysql
+    # # shared network
     networks:
       - backend
 
@@ -32,6 +38,7 @@ services:
     # map code volumes from local to inside working directory, changes made locally will update into the container
     volumes:
       - ./backend/node:/usr/src/app
+      - /usr/src/app/node_modules
     # specify dependency on mysql db
     depends_on:
       - backend-db

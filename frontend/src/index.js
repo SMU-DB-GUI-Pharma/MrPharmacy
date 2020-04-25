@@ -1,29 +1,6 @@
-import ReactDOM from "react-dom";
-import React, { Component } from "react";
-import "bootstrap/dist/css/bootstrap.css";
-import Prescriptions from "./components/prescriptions";
-import NavBar from "./components/navbar";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
 
-const Welcome = () => {
-  console.log("display welcome message");
-  return (
-    <>
-      <h1>Welcome to Pharma</h1>
-    </>
-  );
-};
-
-const App = () => {
-  return (
-    <React.Fragment>
-      <NavBar />
-      <main className="container">
-        <h1 className="m-3 text-primary">Prescriptions</h1>
-        <hr />
-        <Prescriptions />
-      </main>
-    </React.Fragment>
-  );
-};
-
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
