@@ -1,0 +1,7 @@
+export * from './accountpage.jsx'
+export * from './dashboard.jsx'
+export * from './landingpage.jsx'
+export * from './navbar.jsx'
+export * from './prescriptionlist.jsx'
+export * from './prescriptiondetail.jsx'
+export * from './searchingpage.jsx'
