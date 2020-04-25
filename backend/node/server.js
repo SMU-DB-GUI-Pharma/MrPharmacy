@@ -49,6 +49,8 @@ app.get('/', (req, res) => {
   res.status(200).send('Go to 0.0.0.0:3000.');
 });
 
+///////////////////////////////////////////////// USER /////////////////////////////////////////////////////
+
 //GET; return all of the Users
 app.get('/users', function (req, res) {
   console.log("INSIDE USERS API CALL");
@@ -57,6 +59,8 @@ app.get('/users', function (req, res) {
 		res.end(JSON.stringify(result)); // Result in JSON format
 	});
 });
+
+/////////////////////////////////////////////// INSURANCE //////////////////////////////////////////////////
 
 //GET; return all of the Insurances
 app.get('/insurances', function (req, res) {
@@ -67,6 +71,8 @@ app.get('/insurances', function (req, res) {
 	});
 });
 
+/////////////////////////////////////////////// PHARMACY //////////////////////////////////////////////////
+
 // GET; For getting all of Pharmacy
 app.get('/pharmacy', function (req, res) {
   console.log("INSIDE PHARMACY API CALL");
@@ -75,6 +81,40 @@ app.get('/pharmacy', function (req, res) {
 		res.end(JSON.stringify(result)); // Result in JSON format
 	});
 });
+
+//User Story 5.2 [READ] - I want to be able to compare pharmacies
+app.get('/comparepharmacies/:pharm1/:pharm2', function (req, res) {
+  console.log("INSIDE compare pharmacy API CALL");
+  var pharmacyName1 = req.param('pharm1');
+  var pharmacyName2 = req.param('pharm2');
+  connection.query("SELECT * FROM `MrPharma`.`Pharmacy` WHERE PharmacyName = ? UNION SELECT * FROM `MrPharma`.`Pharmacy` WHERE PharmacyName = ?;", 
+    [pharmacyName1, pharmacyName2], function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
+
+//User Story 5.3 [READ] I want to be able to choose a pharmacy for myself
+app.get('/choosepharmacy/:pharmacy', function (req, res) {
+  console.log("INSIDE choose pharmacy API CALL");
+  var pharmacyName1 = req.param('pharmacy');
+  connection.query("SELECT * FROM `MrPharma`.`Pharmacy` WHERE PharmacyName = ? ;", [pharmacyName1], function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
+
+//User Story 5.4 [READ] I want to be able to contact pharmacies
+app.get('/contactpharmacy/:pharmacy', function (req, res) {
+  console.log("INSIDE choose pharmacy API CALL");
+  var pharmacyName1 = req.param('pharmacy');
+  connection.query("SELECT Phone FROM `MrPharma`.`Pharmacy` WHERE PharmacyName = ? ;", [pharmacyName1], function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
+
+////////////////////////////////////////// PRESCRIPTION BRANDS ////////////////////////////////////////////
 
 //GET; return all of the Prescription Brands
 app.get('/prescriptionbrands', function (req, res) {
@@ -85,7 +125,9 @@ app.get('/prescriptionbrands', function (req, res) {
 	});
 });
 
-//GET; return all of the Prescription Brands
+/////////////////////////////////////////// PRESCRIPTION ////////////////////////////////////////////////
+
+//GET; return all of the Prescriptions
 app.get('/prescriptions', function (req, res) {
   console.log("INSIDE PRESCRIPTION API CALL");
 	connection.query('SELECT * FROM `Prescription`;', function (err, result, fields) {
