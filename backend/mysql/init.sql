@@ -97,15 +97,15 @@ VALUES
 
 -- create user PrescriptionBrand table
 CREATE TABLE IF NOT EXISTS `MrPharma`.`PrescriptionBrand` (
-  'BrandID' INT NOT NULL AUTO_INCREMENT,
-  'BrandName' VARCHAR(50) NULL,
-  'Description' TEXT NULL,
-  'Image' MEDIUMBLOB NULL,
+  BrandID INT NOT NULL AUTO_INCREMENT,
+  BrandName VARCHAR(50) NULL,
+  Description TEXT NULL,
+  Image MEDIUMBLOB NULL,
   PRIMARY KEY (BrandID)
 );
 
 -- populate PrescriptionBrand with dummy data
-INSERT INTO `MrPharma`.`PrescriptionBrand` 
+INSERT INTO `PrescriptionBrand` 
 (BrandName, Description, image)
 VALUES
 ('Pfizer', 'an American multinational pharmaceutical corporation headquartered in New York City', NULL),
@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS `MrPharma`.`Prescription` (
 );
 
 -- populate Prescription table with dummy data
-INSERT INTO `MrPharma`.`Prescription` 
+INSERT INTO `Prescription` 
 (PrescriptionName, StartDate, isRefillable, isRecurring, PrescriptionDescription, Comments,
 Brand_ID, EndDate, BuyPrice, RefillDate, RefillCount, PausePrescription, Code_Pin)
 VALUES

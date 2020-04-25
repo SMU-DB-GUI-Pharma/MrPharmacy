@@ -49,10 +49,46 @@ app.get('/', (req, res) => {
   res.status(200).send('Go to 0.0.0.0:3000.');
 });
 
+//GET; return all of the Users
+app.get('/users', function (req, res) {
+  console.log("INSIDE USERS API CALL");
+	connection.query('SELECT * FROM `MrPharma`.`User`;', function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
+
+//GET; return all of the Insurances
+app.get('/insurances', function (req, res) {
+  console.log("INSIDE Insurances API CALL");
+	connection.query('SELECT * FROM `MrPharma`.`Insurance`;', function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
+
 // GET; For getting all of Pharmacy
 app.get('/pharmacy', function (req, res) {
   console.log("INSIDE PHARMACY API CALL");
 	connection.query('SELECT * FROM `MrPharma`.`Pharmacy`;', function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
+
+//GET; return all of the Prescription Brands
+app.get('/prescriptionbrands', function (req, res) {
+  console.log("INSIDE PRESCRIPTION BARNDS API CALL");
+	connection.query('SELECT * FROM `PrescriptionBrand`;', function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
+
+//GET; return all of the Prescription Brands
+app.get('/prescriptions', function (req, res) {
+  console.log("INSIDE PRESCRIPTION API CALL");
+	connection.query('SELECT * FROM `Prescription`;', function (err, result, fields) {
 		if (err) throw err;
 		res.end(JSON.stringify(result)); // Result in JSON format
 	});
@@ -103,14 +139,6 @@ app.get('/values', (req, res) => {
   });
 });
 
-
-// //GET; return all of the prescription brands
-// app.get('/prescriptionBrand', function (req, res) {
-// 	connection.query("SELECT * FROM MrPharma.PrescriptionBrand", function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
 
 // //GET; return all of the insurances
 // app.get('/insurances', function (req, res) {
