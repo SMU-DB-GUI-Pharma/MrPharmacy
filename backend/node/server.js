@@ -114,6 +114,16 @@ app.get('/contactpharmacy/:pharmacy', function (req, res) {
 	});
 });
 
+//User Story 5.5 [READ] I want to be able to search for pharmacies based on insurance accepted, prices, etc
+app.get('/searchpharmacies/:insuranceID', function (req, res) {
+  console.log("INSIDE filter pharmacy API CALL");
+  var insurance = req.param('insuranceID');
+  connection.query("SELECT ALL PharmacyName FROM `MrPharma`.`Pharmacy` WHERE InsuranceID = ? ;", insurance, function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
+
 ////////////////////////////////////////// PRESCRIPTION BRANDS ////////////////////////////////////////////
 
 //GET; return all of the Prescription Brands

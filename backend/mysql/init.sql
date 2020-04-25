@@ -84,16 +84,16 @@ CREATE TABLE IF NOT EXISTS `MrPharma`.`Pharmacy` (
 INSERT INTO `MrPharma`.`Pharmacy` 
 (PharmacyName, AddressLine1, AddressLine2, City, State, PostalCode, Country,Phone, InsuranceID,Code_Pin)
 VALUES
-('The Plano Pharmacy', '8364 Draper Street', NULL, 'Dallas', 'Texas', '75023', 'United States', '6505555787',1, 1),
-('CVS','1111 Old Country Rd', 'Dallas', 'Texas', NULL, '75251', 'United States', '4155551450',2 , 2),
-('Walgreens', '38 University Avenue', NULL, 'Brookline', 'Massachusetts', '02446', 'United States', '2125557413',3,  3),
-('Rite Aid','51 Stillwater Street', 'Yuma', 'Arizona', NULL, '85365', 'United States', '266427555',4,  4),
+('The Plano Pharmacy', '8364 Draper Street', NULL, 'Dallas', 'Texas', '75023', 'United States', '6505555787', 1, 1),
+('CVS','1111 Old Country Rd', 'Dallas', 'Texas', NULL, '75251', 'United States', '4155551450', 2 , 2),
+('Walgreens', '38 University Avenue', NULL, 'Brookline', 'Massachusetts', '02446', 'United States', '2125557413', 1, 3),
+('Rite Aid','51 Stillwater Street', 'Yuma', 'Arizona', NULL, '85365', 'United States', '266427555', 4,  4),
 ('Kaiser Permanente', '578 Trenton Dr', NULL, 'West Warwick', 'Rhode Island', '02893', 'United States','0395204555', 5,  5),
-('Thrive Apothecary','212 Carroll S', NULL, 'Fort Worth', 'Texas', '76107', 'United States','8174807098', 6,  6),
+('Thrive Apothecary','212 Carroll S', NULL, 'Fort Worth', 'Texas', '76107', 'United States','8174807098', 3,  6),
 ('Baylor Scott & White Pharmacy', '3600 Gaston Ave', '#109', 'Dallas', 'Texas', '74246', 'United States', '2145328290', 7, 7),
 ('Pride Pharmacy', '4015 Lemmon Ave', NULL, 'Dallas', 'Texas', '75219', 'United States', '2149547389', 8, 8),
-('Omega Pharmacy', '4507 Maple Ave', '#100', 'Dallas', 'Texas', '75219', 'United States', '2145998844', 9, 9),
-('SMU Health Center Pharmacy', '6004 Hillcrest Ave', NULL, 'Dallas', 'Texas', '75275', 'United States', '2147682149', 10, 10);
+('Omega Pharmacy', '4507 Maple Ave', '#100', 'Dallas', 'Texas', '75219', 'United States', '2145998844', 2, 9),
+('SMU Health Center Pharmacy', '6004 Hillcrest Ave', NULL, 'Dallas', 'Texas', '75275', 'United States', '2147682149', 3, 10);
 
 -- create user PrescriptionBrand table
 CREATE TABLE IF NOT EXISTS `MrPharma`.`PrescriptionBrand` (
