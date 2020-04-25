@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mysql = require('mysql');
 const { log, ExpressAPILogMiddleware } = require('@rama41222/node-logger');
-const Router = express.Router();
+var router = express.Router();
 
 //mysql connection
 var connection = mysql.createConnection({
@@ -46,26 +46,12 @@ connection.connect(function (err) {
 
 //GET /
 app.get('/', (req, res) => {
-  res.status(200).send('Go to 0.0.0.0:3000.');
+  res.status(200).send('Go to the 0.0.0.0:3000.');
 });
 
 
 
-// //GET; 1.2 return all of the prescription brands
-// app.get('/prescriptionBrand', function (req, res) {
-// 	connection.query("SELECT * FROM PrescriptionBrand", function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
 
-// //GET; return all of the insurances
-// app.get('/insurances', function (req, res) {
-// 	connection.query("SELECT * FROM Insurance", function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
 ///////////////////////////////////////////////// USER /////////////////////////////////////////////////////
 
 //GET; return all of the Users
@@ -113,7 +99,7 @@ app.get('/comparepharmacies/:pharm1/:pharm2', function (req, res) {
 
 //User Story 5.3 [READ] I want to be able to choose a pharmacy for myself
 app.get('/choosepharmacy/:pharmacy', function (req, res) {
-  console.log("INSIDE choose pharmacy API CALL");
+  console.log("INSIDE choose PHARMACY API CALL");
   var pharmacyName1 = req.param('pharmacy');
   connection.query("SELECT * FROM `MrPharma`.`Pharmacy` WHERE PharmacyName = ? ;", [pharmacyName1], function (err, result, fields) {
 		if (err) throw err;
@@ -143,25 +129,24 @@ app.get('/searchpharmacies/:insuranceID', function (req, res) {
 
 ////////////////////////////////////////// PRESCRIPTION BRANDS ////////////////////////////////////////////
 
-// //GET; return all of the Prescription Brands
-// app.get('/prescriptionbrands', function (req, res) {
-//   console.log("INSIDE PRESCRIPTION BARNDS API CALL");
-// 	connection.query('SELECT * FROM `PrescriptionBrand`;', function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
-
+//GET; return all of the Prescription Brands
+router.get('/prescriptionBrand', function (req, res) {
+  console.log("INSIDE PRESCRIPTION API CALL");
+	con.query("SELECT * FROM PrescriptionBrand", function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
 /////////////////////////////////////////// PRESCRIPTION ////////////////////////////////////////////////
 
-// //GET; return all of the Prescriptions
-// app.get('/prescriptions', function (req, res) {
-//   console.log("INSIDE PRESCRIPTION API CALL");
-// 	connection.query('SELECT * FROM `Prescription`;', function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
+//GET; return all of the Prescriptions
+app.get('/prescriptions', function (req, res) {
+  console.log("INSIDE PRESCRIPTION API CALL");
+	connection.query('SELECT * FROM `Prescription`;', function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
 
 //1.1 [CREATE] non-recurring prescription
 
@@ -169,12 +154,12 @@ app.get('/searchpharmacies/:insuranceID', function (req, res) {
 
 //1.2 [READ] prescriptions that run out and are no longer eligible for refills
 // to be designated as a past prescription
-// app.get('/prescriptionBrand', function (req, res) {
-// 	connection.query("SELECT * FROM PrescriptionBrand", function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
+app.get('/prescriptionBrand', function (req, res) {
+	connection.query("SELECT * FROM `PrescriptionBrand`", function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
 
 //1.3 [UPDATE] I want to be able to edit a prescription that I have entered
 
@@ -183,13 +168,13 @@ app.get('/searchpharmacies/:insuranceID', function (req, res) {
 //1.5 [DELETE] non-recurring prescription
 
 //1.6 I want to be able to search my prescription by name out of all my prescriptions
-// app.get('/prescriptionSearch/:prescriptionName', function (req, res) {
-// 	var prescriptionName = req.param('prescriptionName');
-// 	connection.query("SELECT * from Prescription WHERE prescriptionName = ? ;", prescriptionName, function (err, result, fields) {
-// 		  if (err) throw err; //Need to figure out how to add if doesn't exist
-// 		  res.end(JSON.stringify(result)); // Result in JSON format
-// 	  });
-//   });
+app.get('/prescriptionSearch/:prescriptionName', function (req, res) {
+	var prescriptionName = req.param('prescriptionName');
+	connection.query("SELECT * from Prescription WHERE prescriptionName = ? ;", prescriptionName, function (err, result, fields) {
+		  if (err) throw err; //Need to figure out how to add if doesn't exist
+		  res.end(JSON.stringify(result)); // Result in JSON format
+	  });
+  });
 
 // //1.7 I want to be able to filter prescriptions by recurring and non-recurring
 // app.get('/prescriptionRecurringVSNot', function (req, res) { //Case statement
