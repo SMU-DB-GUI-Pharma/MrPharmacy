@@ -1,3 +1,13 @@
+-- give access to manager on db
+GRANT ALL PRIVILEGES ON *.* TO 'manager'@'%';
+
+-- set password method to native password for mysql workbench access (mysql 8 issue)
+ALTER USER 'manager'@'%' IDENTIFIED WITH MYSQL_NATIVE_PASSWORD BY 'Password';
+
+-- flush them privileges
+FLUSH PRIVILEGES;
+
+
 CREATE DATABASE IF NOT EXISTS MrPharma;
 USE MrPharma;
 
@@ -13,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `MrPharma`.`User` (
 );
 
 -- populate Users with dummy data
-INSERT INTO `User` (Username, Password, TotalCostPrescriptions, MonthlyCost, FinancialReport)
+INSERT INTO `MrPharma`.`User` (Username, Password, TotalCostPrescriptions, MonthlyCost, FinancialReport)
 VALUES
 ('throwerslug','password1', '100.00', '33.2', NULL),
 ('gorebland','password2', '200.00', '11.04', NULL),
@@ -46,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `MrPharma`.`Insurance` (
 );
 
 -- populate Insurance table with dummy data
-INSERT INTO `Insurance` 
+INSERT INTO `MrPharma`.`Insurance` 
 (Company, AddressLine1, AddressLine2, City, State, PostalCode, Country, PhoneNumber, Email, Code_Pin)
 VALUES
 ('Blue Cross Blue Shield', '8364 Dyer Street', NULL, 'Dallas', 'Texas',  '75205', 'United States','4534126683', 'blue@email.com', 1),
@@ -81,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `MrPharma`.`Pharmacy` (
 );
 
 -- populate Pharmacy with dummy data
-INSERT INTO `Pharmacy` 
+INSERT INTO `MrPharma`.`Pharmacy` 
 (PharmacyName, AddressLine1, AddressLine2, City, State, PostalCode, Country,Phone, InsuranceID,Code_Pin)
 VALUES
 ('The Plano Pharmacy', '8364 Draper Street', NULL, 'Dallas', 'Texas', '75023', 'United States', '6505555787',1, 1),
@@ -97,15 +107,15 @@ VALUES
 
 -- create user PrescriptionBrand table
 CREATE TABLE IF NOT EXISTS `MrPharma`.`PrescriptionBrand` (
-  BrandID INT NOT NULL AUTO_INCREMENT,
-  BrandName VARCHAR(50) NULL,
-  Description TEXT NULL,
-  Image MEDIUMBLOB NULL,
+  'BrandID' INT NOT NULL AUTO_INCREMENT,
+  'BrandName' VARCHAR(50) NULL,
+  'Description' TEXT NULL,
+  'Image' MEDIUMBLOB NULL,
   PRIMARY KEY (BrandID)
 );
 
 -- populate PrescriptionBrand with dummy data
-INSERT INTO `PrescriptionBrand` 
+INSERT INTO `MrPharma`.`PrescriptionBrand` 
 (BrandName, Description, image)
 VALUES
 ('Pfizer', 'an American multinational pharmaceutical corporation headquartered in New York City', NULL),
@@ -139,7 +149,7 @@ CREATE TABLE IF NOT EXISTS `MrPharma`.`Prescription` (
 );
 
 -- populate Prescription table with dummy data
-INSERT INTO `Prescription` 
+INSERT INTO `MrPharma`.`Prescription` 
 (PrescriptionName, StartDate, isRefillable, isRecurring, PrescriptionDescription, Comments,
 Brand_ID, EndDate, BuyPrice, RefillDate, RefillCount, PausePrescription, Code_Pin)
 VALUES
@@ -153,15 +163,5 @@ VALUES
 ('Prednisone', '2020-02-14', 1, 1, 'A glucocorticoid medication mostly used to suppress the immune system and decrease inflammation in conditions such as asthma, COPD, and rheumatologic diseases', 'This medicine makes me feel nauseous', 1, '2020-08-24', '10.99', '2020-06-24', 3, NULL, 4),
 ('Gabapentin', '2020-03-15', 1, 0, 'An anticonvulsant medication used to treat partial seizures, neuropathic pain, hot flashes, and restless legs syndrome', 'This medicine helps me with my issues', 1, '2020-05-24', '12.99', '2020-09-01', 5, NULL, 8);
 
--- create user called `manager` with password `Password`
-CREATE USER 'manager'@'%' IDENTIFIED BY 'Password';
 
--- give access to manager on db
-GRANT ALL PRIVILEGES ON MrPharma.* TO 'manager'@'%';
-
--- set password method to native password for mysql workbench access (mysql 8 issue)
-ALTER USER 'manager'@'%' IDENTIFIED WITH MYSQL_NATIVE_PASSWORD BY 'Password';
-
--- flush them privileges
-FLUSH PRIVILEGES;
 
