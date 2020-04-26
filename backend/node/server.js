@@ -99,6 +99,15 @@ app.post('/addInsurance/:pinCode', async (req, res) => {
   });
 });
 
+//User Story 6.4 [DELETE] Insurance information - this request is a PUT and not DELETE because we are only updating the user's insurance to NULL, not deleting entire user
+//http://localhost:8000/insurance/:username
+app.put('/insurance/:username', async (req, res) => {
+  var username = req.param('username');
+  connection.query("Update User SET Insurance = NULL WHERE User.Username = ?;", [username], function (err, result, fields) {
+    if (err) throw err;
+	  res.end(JSON.stringify(result)); // Result in JSON format
+  });
+});
 
 /////////////////////////////////////////////// PHARMACY //////////////////////////////////////////////////
 
