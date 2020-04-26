@@ -51,7 +51,7 @@ app.get('/', (req, res) => {
 
 ///////////////////////////////////////////////// USER /////////////////////////////////////////////////////
 
-//GET; return all of the Users
+//get all user information - http://localhost:8000/users
 app.get('/users', function (req, res) {
   console.log("INSIDE USERS API CALL");
 	connection.query('SELECT * FROM `MrPharma`.`User`;', function (err, result, fields) {
@@ -62,7 +62,7 @@ app.get('/users', function (req, res) {
 
 /////////////////////////////////////////////// INSURANCE //////////////////////////////////////////////////
 
-//GET; return all of the Insurances
+//return all insurance info - http://localhost:8000/insurances
 app.get('/insurances', function (req, res) {
   console.log("INSIDE Insurances API CALL");
 	connection.query('SELECT * FROM `MrPharma`.`Insurance`;', function (err, result, fields) {
@@ -71,11 +71,19 @@ app.get('/insurances', function (req, res) {
 	});
 });
 
+//User Story 3.3 [CREATE] - I want to be able to enter my insurance information into my profile
+// app.put('/user/:username', async (req, res) => {
+//   var name = req.param('username');
+//   var insuranceName = req.param('insuranceName');
+//   connection.query("UPDATE User SET InsuranceName = ? WHERE Username = ? ", [insuranceName,name],function (err, result, fields) {
+//     if (err) throw err;
+// 	  res.end(JSON.stringify(result)); // Result in JSON format
+// });
 
 
 /////////////////////////////////////////////// PHARMACY //////////////////////////////////////////////////
 
-// GET; For getting all of Pharmacy
+//get all pharmacy information - http://localhost:8000/pharmacy
 app.get('/pharmacy', function (req, res) {
   console.log("INSIDE PHARMACY API CALL");
 	connection.query('SELECT * FROM `MrPharma`.`Pharmacy`;', function (err, result, fields) {
@@ -84,7 +92,8 @@ app.get('/pharmacy', function (req, res) {
 	});
 });
 
-//User Story 5.2 [READ] - I want to be able to compare pharmacies (compare by PharmacyID)
+//User Story 5.2 [READ] - I want to be able to compare pharmacies (replace ':pharm#' with a PharmacyID)
+//http://localhost:8000/comparepharmacies/:pharm1/:pharm2/:pharm3
 app.get('/comparepharmacies/:pharm1/:pharm2/:pharm3', function (req, res) {
   console.log("INSIDE compare pharmacy API CALL");
   var pharmacyName1 = req.param('pharm1');
@@ -97,7 +106,8 @@ app.get('/comparepharmacies/:pharm1/:pharm2/:pharm3', function (req, res) {
 	});
 });
 
-//User Story 5.3 [READ] I want to be able to choose a pharmacy for myself (choose by PharmacyName)
+// User Story 5.3 [READ] I want to be able to choose a pharmacy for myself (replace ':pharmacy' with a PharmacyName)
+// http://localhost:8000/choosepharmacy/:pharmacy
 app.get('/choosepharmacy/:pharmacy', function (req, res) {
   console.log("INSIDE choose pharmacy API CALL");
   var pharmacyName1 = req.param('pharmacy');
@@ -107,7 +117,8 @@ app.get('/choosepharmacy/:pharmacy', function (req, res) {
 	});
 });
 
-//User Story 5.4 [READ] I want to be able to contact pharmacies (choose by PharmacyName)
+//User Story 5.4 [READ] I want to be able to contact pharmacies (replace ':pharmacy' with a PharmacyName)
+//http://localhost:8000/contactpharmacy/:pharmacy
 app.get('/contactpharmacy/:pharmacy', function (req, res) {
   console.log("INSIDE choose pharmacy API CALL");
   var pharmacyName1 = req.param('pharmacy');
@@ -117,7 +128,8 @@ app.get('/contactpharmacy/:pharmacy', function (req, res) {
 	});
 });
 
-//User Story 5.5 [READ] I want to be able to search for pharmacies based on insurance accepted, prices, etc
+//User Story 5.5 [READ] I want to be able to search for pharmacies based on insurance accepted (replace ':insuranceID' with an InsuranceID #)
+//http://localhost:8000/searchpharmacies/:insuranceID
 app.get('/searchpharmacies/:insuranceID', function (req, res) {
   console.log("INSIDE filter pharmacy API CALL");
   var insurance = req.param('insuranceID');
@@ -129,7 +141,7 @@ app.get('/searchpharmacies/:insuranceID', function (req, res) {
 
 ////////////////////////////////////////// PRESCRIPTION BRANDS ////////////////////////////////////////////
 
-//GET; return all of the Prescription Brands
+//get all prescription brand information - http://localhost:8000/prescriptionbrands
 app.get('/prescriptionbrands', function (req, res) {
   console.log("INSIDE PRESCRIPTION BARNDS API CALL");
 	connection.query('SELECT * FROM `PrescriptionBrand`;', function (err, result, fields) {
@@ -140,7 +152,7 @@ app.get('/prescriptionbrands', function (req, res) {
 
 /////////////////////////////////////////// PRESCRIPTION ////////////////////////////////////////////////
 
-//GET; return all of the Prescriptions
+//get all prescription information - http://localhost:8000/prescriptions
 app.get('/prescriptions', function (req, res) {
   console.log("INSIDE PRESCRIPTION API CALL");
 	connection.query('SELECT * FROM `Prescription`;', function (err, result, fields) {
@@ -193,64 +205,6 @@ app.get('/values', (req, res) => {
     }
   });
 });
-
-
-// //GET; return all of the insurances
-// app.get('/insurances', function (req, res) {
-// 	connection.query("SELECT * FROM Insurance", function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
-
-// //GET; return all of the Prescriptions
-// app.get('/prescriptions', function (req, res) {
-// 	connection.query("SELECT * FROM Prescription", function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
-
-// //GET; return all of the users
-// app.get('/users', function (req, res) {
-// 	connection.query("SELECT * FROM User", function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
-
-// //GET; for user/{username}, need to return their information
-// app.get('/user/:username', function (req, res) {
-// 	connection.query("SELECT * FROM user u where u.username = ?", [req.params.userName], function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
-
-// //GET; For getting all of payments
-// app.get('/payments', function (req, res) {
-// 	connection.query("SELECT * FROM payments", function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
-
-// //GET; For getting all of Pharmacy
-// app.get('/pharmacy', function (req, res) {
-// 	con.query("SELECT * FROM Pharmacy", function (err, result, fields) {
-// 		if (err) { throw err;} 
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
-
-// //GET; For getting a specific pharmacy
-// app.get('/pharmacy/:productCode', function (req, res) {
-// 	con.query("SELECT * FROM pharmacy p WHERE p.pharmacyName = ?", [req.params.pharmacyName], function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
-
 
 // // POST; For adding a user
 // app.post('/users', async (req, res) => {  
