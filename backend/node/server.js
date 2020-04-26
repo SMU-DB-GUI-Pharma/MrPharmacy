@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mysql = require('mysql');
+var session = require('express-session');
 const { log, ExpressAPILogMiddleware } = require('@rama41222/node-logger');
 const Router = express.Router();
 
@@ -28,7 +29,15 @@ const app = express();
 //create a logger object.  Using logger is preferable to simply writing to the console.
 const logger = log({ console: true, file: false, label: config.name });
 
+app.use(session({
+	secret: 'secret',
+	resave: true,
+	saveUninitialized: true
+}));
+app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
+
+
 app.use(cors({
   origin: '*'
 }));
@@ -59,6 +68,47 @@ app.get('/users', function (req, res) {
 		res.end(JSON.stringify(result)); // Result in JSON format
 	});
 });
+
+app.post('/auth', function(request, response) {
+	var username = request.body.username;
+	var password = request.body.password;
+    	if (username && password) {
+		connection.query('SELECT * FROM User WHERE Username = ? AND Password = ?', [username, password], function(error, results, fields) {
+			if (results.length > 0) {
+				request.session.loggedin = true;
+				request.session.username = username;
+				response.redirect('/home');
+			} else {
+				response.send('Incorrect Username and/or Password!');
+			}			
+			response.end();
+		});
+       } else {
+	    	response.send('Please enter Username and Password!');
+                response.end();
+    	}
+});
+
+//work in progress
+app.post('/register', async (req, res) => {
+	var params  = req.body;
+	connection.query('INSERT INTO User SET ?', params , function(error, results, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+		});
+});
+
+app.get('/home', function(request, response) {
+	if (request.session.loggedin) {
+		response.send('Welcome back, ' + request.session.username + '!');
+	} else {
+		response.send('Please login to view this page!');
+	}
+	response.end();
+});
+
+
+
 
 /////////////////////////////////////////////// INSURANCE //////////////////////////////////////////////////
 
