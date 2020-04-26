@@ -153,7 +153,7 @@ VALUES
 ('Prednisone', '2020-02-14', 1, 1, 'A glucocorticoid medication mostly used to suppress the immune system and decrease inflammation in conditions such as asthma, COPD, and rheumatologic diseases', 'This medicine makes me feel nauseous', 1, '2020-08-24', '10.99', '2020-06-24', 3, NULL, 4),
 ('Gabapentin', '2020-03-15', 1, 0, 'An anticonvulsant medication used to treat partial seizures, neuropathic pain, hot flashes, and restless legs syndrome', 'This medicine helps me with my issues', 1, '2020-05-24', '12.99', '2020-09-01', 5, NULL, 8);
 
--- create user called `manager` with password `Password`
+create user called `manager` with password `Password`
 CREATE USER 'manager'@'backend-db' IDENTIFIED BY 'Password';
 
 -- give access to manager on db
@@ -164,3 +164,4 @@ ALTER USER 'manager'@'backend-db' IDENTIFIED WITH MYSQL_NATIVE_PASSWORD BY 'Pass
 
 -- flush them privileges
 FLUSH PRIVILEGES;
+
