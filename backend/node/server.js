@@ -56,6 +56,8 @@ connection.connect(function (err) {
 //GET /
 app.get('/', (req, res) => {
   res.status(200).send('Go to 0.0.0.0:3000.');
+	
+
 });
 
 ///////////////////////////////////////////////// USER /////////////////////////////////////////////////////
@@ -69,6 +71,7 @@ app.get('/users', function (req, res) {
 	});
 });
 
+// [CREATE] login with username and password
 app.post('/auth', function(request, response) {
 	var username = request.body.username;
 	var password = request.body.password;
@@ -77,7 +80,7 @@ app.post('/auth', function(request, response) {
 			if (results.length > 0) {
 				request.session.loggedin = true;
 				request.session.username = username;
-				response.redirect('/home');
+			        response.redirect('/home');
 			} else {
 				response.send('Incorrect Username and/or Password!');
 			}			
@@ -87,17 +90,32 @@ app.post('/auth', function(request, response) {
 	    	response.send('Please enter Username and Password!');
                 response.end();
     	}
+	
 });
 
-//work in progress
-app.post('/register', async (req, res) => {
-	var params  = req.body;
-	connection.query('INSERT INTO User SET ?', params , function(error, results, fields) {
-		if (err) throw err;
-		res.end(JSON.stringify(result)); // Result in JSON format
+//6.5 [READ] I want to be able to sign in to the app with a simple pin code
+app.post('/login', function(request, response) {
+	var pincode = request.body.pincode;
+    	if (pincode) {
+		connection.query('SELECT * FROM User WHERE PinCode = ? ', pincode, function(error, results, fields) {
+			if (results.length > 0) {
+				request.session.loggedin = true;
+				request.session.username = "User " + pincode;
+			        response.redirect('/home');
+			} else {
+				response.send('Incorrect Pin');
+			}			
+			response.end();
 		});
+       } else {
+	    	response.send('Please enter you Pin!');
+                response.end();
+    	}
+	
 });
 
+
+//redirect to home after login
 app.get('/home', function(request, response) {
 	if (request.session.loggedin) {
 		response.send('Welcome back, ' + request.session.username + '!');
@@ -105,6 +123,62 @@ app.get('/home', function(request, response) {
 		response.send('Please login to view this page!');
 	}
 	response.end();
+});
+
+//sign out of the account
+app.get('/logout',function(req,res){    
+    req.session.destroy(function(err){  
+        if(err){  
+            console.log(err);  
+        }  
+        else  
+        {  
+            res.redirect('/');  
+        }  
+   });  
+
+
+//[DELETE] Delete User account
+app.delete('/delete/:pin', function(req, res) {
+   console.log('Deleting a User');
+    var pincode = req.param('pin');
+    connection.query('DELETE FROM User WHERE PinCode = ?', pincode,
+        function(err, result, fields) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('deleted: ' + result.affectedRows);
+                res.redirect('/');
+            }
+        });
+     });
+});
+
+
+//6.1 [CREATE] I want to set my own username and password
+app.post('/register', function(req, res) {
+
+	var users={
+	 PinCode  :req.body.pincode,
+         Username :req.body.username,
+         Password :req.body.password
+      };
+    connection.query('INSERT INTO User SET ?', users, function (error, results, fields) {
+      if (error) {
+        res.json({
+            status:false,
+            message:'there are some error with query'
+        })
+      }else{
+          res.json({
+            status:true,
+            data:results,
+            message:'user registered sucessfully'
+        })
+      }
+    
+  });
+
 });
 
 

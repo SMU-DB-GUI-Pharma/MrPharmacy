@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS `MrPharma`.`User` (
 	  PRIMARY KEY (PinCode),
     `Username` VARCHAR(45),
     `Password` VARCHAR(45),
-    `TotalCostPrescriptions` DECIMAL(10,2) NOT NULL, 
-    `MonthlyCost` DECIMAL(10,2) NOT NULL,
+    `TotalCostPrescriptions` DECIMAL(10,2) NOT NULL DEFAULT '0.00', 
+    `MonthlyCost` DECIMAL(10,2) NOT NULL DEFAULT '0.00',
     `FinancialReport` MEDIUMBLOB NULL
 );
 
