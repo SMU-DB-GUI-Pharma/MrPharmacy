@@ -107,7 +107,7 @@ app.get('/comparepharmacies/:pharm1/:pharm2/:pharm3', function (req, res) {
 });
 
 // User Story 5.3 [READ] I want to be able to choose a pharmacy for myself (replace ':pharmacy' with a PharmacyName)
-// http://localhost:8000/choosepharmacy/:pharmacy
+//http://localhost:8000/choosepharmacy/:pharmacy
 app.get('/choosepharmacy/:pharmacy', function (req, res) {
   console.log("INSIDE choose pharmacy API CALL");
   var pharmacyName1 = req.param('pharmacy');
@@ -129,7 +129,8 @@ app.get('/contactpharmacy/:pharmacy', function (req, res) {
 });
 
 //User Story 5.5 [READ] I want to be able to search for pharmacies based on insurance accepted (replace ':insuranceID' with an InsuranceID #)
-//http://localhost:8000/searchpharmacies/:insuranceID
+//refer to database schema to see which pharmacies match to which insurances
+//http://localhost:8000/searchpharmacies/:insuranceChoice
 app.get('/searchpharmacies/:insuranceID', function (req, res) {
   console.log("INSIDE filter pharmacy API CALL");
   var insurance = req.param('insuranceID');
