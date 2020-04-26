@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mysql = require('mysql');
 const { log, ExpressAPILogMiddleware } = require('@rama41222/node-logger');
-const Router = express.Router();
+
 
 //mysql connection
 var connection = mysql.createConnection({
@@ -24,6 +24,7 @@ const config = {
 
 //create the express.js object
 const app = express();
+//const router = express.Router()
 
 //create a logger object.  Using logger is preferable to simply writing to the console.
 const logger = log({ console: true, file: false, label: config.name });
@@ -45,6 +46,7 @@ connection.connect(function (err) {
 });
 
 //GET /
+
 app.get('/', (req, res) => {
   res.status(200).send('Go to 0.0.0.0:3000.');
 });
@@ -71,14 +73,31 @@ app.get('/insurances', function (req, res) {
 	});
 });
 
-//User Story 3.3 [CREATE] - I want to be able to enter my insurance information into my profile
-// app.put('/user/:username', async (req, res) => {
-//   var name = req.param('username');
-//   var insuranceName = req.param('insuranceName');
-//   connection.query("UPDATE User SET InsuranceName = ? WHERE Username = ? ", [insuranceName,name],function (err, result, fields) {
-//     if (err) throw err;
-// 	  res.end(JSON.stringify(result)); // Result in JSON format
-// });
+//User Story 3.3 [CREATE] - I want to be able to update my insurance information in my profile
+//http://localhost:8000/addInsurance/:pinCode?insuranceName=Molina Healthcare
+//http://localhost:8000/addInsurance/:pinCode?insuranceName=Blue Cross Blue Shield
+//replace ':pinCode' with PinCode from User table, replace everything after = to an InsuranceName
+app.put('/addInsurance/:pinCode', async (req, res) => {
+  var pincode = req.param('pinCode');
+  var insuranceName = req.param('insuranceName');
+  connection.query("Update User SET Insurance = ? WHERE User.PinCode = ?;", [insuranceName,pincode], function (err, result, fields) {
+    if (err) throw err;
+	  res.end(JSON.stringify(result)); // Result in JSON format
+  });
+});
+
+//User Story 6.3 [CREATE] I want to be given the option of adding my insurance
+//http://localhost:8000/addInsurance/:pinCode?insuranceName=UnitedHealth
+//replace ':pinCode' with PinCode from User table, replace everything after = to an InsuranceName
+app.post('/addInsurance/:pinCode', async (req, res) => {
+  var pincode = req.param('pinCode');
+  var insuranceName = req.param('insuranceName');
+  connection.query("ALTER TABLE User ADD Insurance varchar(45);") //adds new column to User table
+  connection.query("Update User SET Insurance = ? WHERE User.PinCode = ?;", [insuranceName,pincode], function (err, result, fields) {
+    if (err) throw err;
+	  res.end(JSON.stringify(result)); // Result in JSON format
+  });
+});
 
 
 /////////////////////////////////////////////// PHARMACY //////////////////////////////////////////////////
@@ -94,7 +113,7 @@ app.get('/pharmacy', function (req, res) {
 
 //User Story 5.2 [READ] - I want to be able to compare pharmacies (replace ':pharm#' with a PharmacyID)
 //http://localhost:8000/comparepharmacies/:pharm1/:pharm2/:pharm3
-app.get('/comparepharmacies/:pharm1/:pharm2/:pharm3', function (req, res) {
+app.get('/comparepharmacy/:pharm1/:pharm2/:pharm3', function (req, res) {
   console.log("INSIDE compare pharmacy API CALL");
   var pharmacyName1 = req.param('pharm1');
   var pharmacyName2 = req.param('pharm2');
@@ -119,7 +138,7 @@ app.get('/choosepharmacy/:pharmacy', function (req, res) {
 
 //User Story 5.4 [READ] I want to be able to contact pharmacies (replace ':pharmacy' with a PharmacyName)
 //http://localhost:8000/contactpharmacy/:pharmacy
-app.get('/contactpharmacy/:pharmacy', function (req, res) {
+app.get('/contactpharmacy/:pharmacyName', function (req, res) {
   console.log("INSIDE choose pharmacy API CALL");
   var pharmacyName1 = req.param('pharmacy');
   connection.query("SELECT Phone FROM `MrPharma`.`Pharmacy` WHERE PharmacyName = ? ;", [pharmacyName1], function (err, result, fields) {
