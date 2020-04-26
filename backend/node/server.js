@@ -128,28 +128,28 @@ app.get('/searchpharmacies/:insuranceID', function (req, res) {
 
 //////////////////////////////////////// PRESCRIPTION BRANDS ////////////////////////////////////////////
  //GET; return all of the Prescription Brands
-app.get('/prescriptionbrands', function (req, res) {
-  console.log("INSIDE PRESCRIPTION BARNDS API CALL");
-  connection.query('SELECT * FROM `PrescriptionBrand`;', function (err, result, fields) {
-      if (err) throw err;
-      res.end(JSON.stringify(result)); // Result in JSON format
-  });
- });
+app.get('/prescriptionbrands', function (req, res) {;
+    connection.query("Select * from PrescriptionBrand;", function (err, result, fields) {
+        if (err) throw err;
+        res.end(JSON.stringify(result)); // Result in JSON format
+    });
+   });
 ///////////////////////////////////////// PRESCRIPTION ////////////////////////////////////////////////
  //GET; return all of the Prescriptions
 app.get('/prescriptions', function (req, res) {
-   console.log("INSIDE PRESCRIPTION API CALL");
-  connection.query('SELECT * FROM `Prescription`;', function (err, result, fields) {
+  connection.query("Select * from Prescription;", function (err, result, fields) {
       if (err) throw err;
       res.end(JSON.stringify(result)); // Result in JSON format
   });
  });
 
+
 //1.1 [CREATE] non-recurring prescription
+//Check
 app.post('/addNonRecurrPrescription', async (req, res) => {  
 	var querystring = `INSERT INTO Prescription (PrescriptionName, StartDate, isRefillable, isRecurring, PrescriptionDescription, Comments,
-    Brand_ID, EndDate, BuyPrice, RefillDate, RefillCount, PausePrescription, Code_Pin) VALUES ('${con.escape(req.params.PrescriptionName)}', '${con.escape(req.params.StartDate)}', '${con.escape(req.params.isRefillable)}', '0', '${con.escape(req.params.PrescriptionDescription)}', '${con.escape(req.params.Comments)}', '${con.escape(req.params.Brand_ID)}', '${con.escape(req.params.EndDate)}', '${con.escape(req.params.BuyPrice)}', '${con.escape(req.params.RefillDate)}', '${con.escape(req.params.RefillCount)}', '${con.escape(req.params.PausePrescription)}', '${con.escape(req.params.Code_Pin)}');`;
-	con.query(querystring, function (err, result, fields) {
+    Brand_ID, EndDate, BuyPrice, RefillDate, RefillCount, PausePrescription, Code_Pin) VALUES ('${connection.escape(req.params.PrescriptionName)}', '${con.escape(req.params.StartDate)}', '${con.escape(req.params.isRefillable)}', '0', '${con.escape(req.params.PrescriptionDescription)}', '${con.escape(req.params.Comments)}', '${con.escape(req.params.Brand_ID)}', '${con.escape(req.params.EndDate)}', '${con.escape(req.params.BuyPrice)}', '${con.escape(req.params.RefillDate)}', '${con.escape(req.params.RefillCount)}', '${con.escape(req.params.PausePrescription)}', '${con.escape(req.params.Code_Pin)}');`;
+	connection.query(querystring, function (err, result, fields) {
 		if (err) throw err;
 		res.end(JSON.stringify(result)); // Result in JSON format
 	});
@@ -165,6 +165,7 @@ app.get('/prescriptionOutOfUse', function (req, res) {
  });
 
 //1.3 [UPDATE] I want to be able to edit a prescription that I have entered
+//Not working
 app.put('/updatePrescriptionName/:PrescriptionName', async (req, res) => {
   var pCode = `SET SQL_SAFE_UPDATES = 0; UPDATE Prescription SET PrescriptionName = ('${con.escape(req.params.NewPrescriptionName)}') WHERE PrescriptionName = ('${con.escape(req.params.PrescriptionName)}') `;
 	con.query(pCode, function (err, result, fields) {
@@ -184,8 +185,8 @@ app.put('/updatePrescriptionStartDate/:PrescriptionName', async (req, res) => {
 });
 
 app.put('/updatePrescriptionRefillable/:PrescriptionName', async (req, res) => {
-  var pCode = `SET SQL_SAFE_UPDATES = 0; UPDATE Prescription SET isRefillable = ('${con.escape(req.params.isRefillable)}') WHERE PrescriptionName = ('${con.escape(req.params.PrescriptionName)}') `;
-	con.query(pCode, function (err, result, fields) {
+  var updateRefill= `SET SQL_SAFE_UPDATES = 0; UPDATE Prescription SET isRefillable = ('${con.escape(req.params.isRefillable)}') WHERE PrescriptionName = ('${con.escape(req.params.PrescriptionName)}') `;
+	con.query(updateRefill, function (err, result, fields) {
 		if (err) throw err;
 		//console.log(result);
 		res.end(JSON.stringify(result)); 
@@ -275,7 +276,7 @@ app.get('/prescriptionSortByAddDate', function (req, res) {
 //1.5 [DELETE] non-recurring prescription
 app.delete('/deleteprescription/:PrescriptionName', async (req, res) => {
 	var prescriptionName = req.param('PrescriptionName')
-	con.query("SET SQL_SAFE_UPDATES = 0; DELETE FROM Prescription WHERE PrescriptionName = ?;  SET SQL_SAFE_UPDATES = 1;", prescriptionName,function (err, result, fields) {
+	connection.query("SET SQL_SAFE_UPDATES = 0; DELETE FROM Prescription WHERE PrescriptionName = ?;  SET SQL_SAFE_UPDATES = 1;", prescriptionName,function (err, result, fields) {
 		if (err) 
 			return console.error(error.message);
 		res.end(JSON.stringify(result)); 
@@ -284,13 +285,14 @@ app.delete('/deleteprescription/:PrescriptionName', async (req, res) => {
 });
 
 //1.6 I want to be able to search my prescription by name out of all my prescriptions
-app.get('/prescriptionSearch/:PrescriptionName', function (req, res) {
-  var prescriptionName = req.param('PrescriptionName')
-  connection.query("SELECT * from Prescription WHERE PrescriptionName = ? ;", prescriptionName, function (err, result, fields) {
+app.get('/prescriptionsearch/:name', function (req, res) {
+  var search = req.param('name')
+  connection.query("Select * From Prescription WHERE PrescriptionName = ?;",search, function (err, result, fields) {
         if (err) throw err; //Need to figure out how to add if doesn't exist
         res.end(JSON.stringify(result)); // Result in JSON format
     });
    });
+
 
 
 //1.7 I want to be able to filter prescriptions by recurring and non-recurring
@@ -333,6 +335,14 @@ app.delete('/prescription/:PrescriptionName', async (req, res) => {
 // 2.1 I want medications that are recurring to be distinguished from the rest
 
 // 2.2 [CREATE] recurring medication
+app.post('/addRecurrPrescription', async (req, res) => {  
+	var querystring = `INSERT INTO Prescription (PrescriptionName, StartDate, isRefillable, isRecurring, PrescriptionDescription, Comments,
+    Brand_ID, EndDate, BuyPrice, RefillDate, RefillCount, PausePrescription, Code_Pin) VALUES ('${con.escape(req.params.PrescriptionName)}', '${con.escape(req.params.StartDate)}', '${con.escape(req.params.isRefillable)}', '1', '${con.escape(req.params.PrescriptionDescription)}', '${con.escape(req.params.Comments)}', '${con.escape(req.params.Brand_ID)}', '${con.escape(req.params.EndDate)}', '${con.escape(req.params.BuyPrice)}', '${con.escape(req.params.RefillDate)}', '${con.escape(req.params.RefillCount)}', '${con.escape(req.params.PausePrescription)}', '${con.escape(req.params.Code_Pin)}');`;
+	con.query(querystring, function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
 
 // 2.3 [UPDATE] I want to change recurring information of added medications
 // See 1.3
@@ -340,19 +350,20 @@ app.delete('/prescription/:PrescriptionName', async (req, res) => {
 // 2.4 I want to pause a recurring medication for a period of time.
 
 
+
 // 2.5 [DELETE] recurring medication
 //See 1.5
 
 // 3.1 I want to distinguish my prescriptions that need to be refilled from the rest
-app.get('/prescriptionDistinguishRefillables', function (req, res) {
-  connection.query("SELECT * from Prescription WHERE isRefillable = 1;", function (err, result, fields) {
+app.get('/refillables', function (req, res) {
+  connection.query("Select * from Prescription where isRefillable = 1;", function (err, result, fields) {
         if (err) throw err; //Need to figure out how to add if doesn't exist
         res.end(JSON.stringify(result)); // Result in JSON format
     });
    });
 
 // 3.2 I want a prescription that is about to run out to be able to be distinguished from the others
-app.get('/prescriptionDistinguishRunOut', function (req, res) {
+app.get('/prescriptiondistinguishrunout', function (req, res) {
     connection.query("Select * From Prescription Order by RefillDate asc, EndDate asc;", function (err, result, fields) {
           if (err) throw err; //Need to figure out how to add if doesn't exist
           res.end(JSON.stringify(result)); // Result in JSON format
@@ -360,9 +371,9 @@ app.get('/prescriptionDistinguishRunOut', function (req, res) {
      });
 
 // 3.4 I want to see a recommended refill date for eligible prescriptions
-app.get('/prescriptionRecommendedRefillDate:PrescriptionName', function (req, res) {
-  var prescriptionName = req.param('PrescriptionName')
-  connection.query("SELECT RefillDate from Prescription WHERE PrescriptionName = ? ;", prescriptionName, function (err, result, fields) {
+app.get('/prescription/recommendedrefilldate/:prescriptionname', function (req, res) {
+  var prescriptionName = req.param('prescriptionname')
+  connection.query("Select RefillDate as RecommendedRefillDate From Prescription where PrescriptionName = ?;", prescriptionName, function (err, result, fields) {
         if (err) throw err; //Need to figure out how to add if doesn't exist
         res.end(JSON.stringify(result)); // Result in JSON format
     });
@@ -370,33 +381,42 @@ app.get('/prescriptionRecommendedRefillDate:PrescriptionName', function (req,�
 
 
 // 3.5 [READ] remaining refills
-app.get('/prescriptionRemainingRefills:PrescriptionName', function (req, res) {
-  var prescriptionName = req.param('PrescriptionName')
-  connection.query("SELECT RefillCount from Prescription WHERE PrescriptionName = ? ;", prescriptionName, function (err, result, fields) {
+app.get('/prescription/remainingrefills/:prescriptionname', function (req, res) {
+  var prescriptionName = req.param('prescriptionname')
+  connection.query("Select RefillCount as RemainingRefills From Prescription where PrescriptionName = ?;", prescriptionName, function (err, result, fields) {
         if (err) throw err; //Need to figure out how to add if doesn't exist
         res.end(JSON.stringify(result)); // Result in JSON format
     });
    });
 
 // 4.1 [READ] dosage frequency
+// Can't do
 
 // 4.2 [READ] potential medication interactions
+// Same as 4.5
 
 // 4.3 [READ] medication ingredients
+app.get('/prescription/ingredients/:prescriptionname', function (req, res) {
+  var prescriptionName = req.param('prescriptionname')
+  connection.query("Select PrescriptionDescription as Ingredients From Prescription where PrescriptionName = ?;", prescriptionName, function (err, result, fields) {
+        if (err) throw err; //Need to figure out how to add if doesn't exist
+        res.end(JSON.stringify(result)); // Result in JSON format
+    });
+   });
 
 // 4.4 [READ] medication shelf life
-app.get('/prescriptionShelfLife/:PrescriptionName', function (req, res) {
-  var prescriptionName = req.param('PrescriptionName')
-  connection.query("SELECT EndDate from Prescription WHERE PrescriptionName = ? ;", prescriptionName, function (err, result, fields) {
+app.get('/prescription/shelflife/:prescriptionname', function (req, res) {
+  var prescriptionName = req.param('prescriptionname')
+  connection.query("Select EndDate as ShelfLife From Prescription where PrescriptionName = ?;", prescriptionName, function (err, result, fields) {
         if (err) throw err; //Need to figure out how to add if doesn't exist
         res.end(JSON.stringify(result)); // Result in JSON format
     });
    });
 
 // 4.5 [READ] medication effects
-app.get('/prescriptionEffects:PrescriptionName', function (req, res) {
-  var prescriptionName = req.param('PrescriptionName')
-  connection.query("SELECT PrescriptionDescription from Prescription WHERE PrescriptionName = ? ;", prescriptionName, function (err, result, fields) {
+app.get('/prescription/effects/:prescriptionname', function (req, res) {
+  var prescriptionName = req.param('prescriptionname')
+  connection.query("Select PrescriptionDescription as Effects From Prescription where PrescriptionName = ?;", prescriptionName, function (err, result, fields) {
         if (err) throw err; //Need to figure out how to add if doesn't exist
         res.end(JSON.stringify(result)); // Result in JSON format
     });

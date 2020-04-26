@@ -1,7 +1,6 @@
 CREATE DATABASE IF NOT EXISTS MrPharma;
 USE MrPharma;
 
--- create Users table
 CREATE TABLE IF NOT EXISTS `MrPharma`.`User` (
     `PinCode` INT NOT NULL AUTO_INCREMENT,
 	  PRIMARY KEY (PinCode),
