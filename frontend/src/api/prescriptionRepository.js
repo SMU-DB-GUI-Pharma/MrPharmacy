@@ -9,7 +9,7 @@ export class PrescriptionRepository {
 
     }
 
-    getPrescriptions(username, sorting,isExpired) {
+    getPrescriptions(username, sorting, isExpired) {
         if (!window.isLocal) {
             return new Promise((resolve, reject) => {
                 axios.get("placeholder for curr prescription for given user data endpoint", username, sorting, isExpired, this.config)
@@ -29,7 +29,7 @@ export class PrescriptionRepository {
         }
     }
 
-    getPrescription(id){
+    getPrescription(id) {
         if (!window.isLocal) {
             return new Promise((resolve, reject) => {
                 axios.get("placeholder for curr prescription for given user data endpoint", id, this.config)
@@ -43,6 +43,40 @@ export class PrescriptionRepository {
             return new Promise((resolve, reject) => {
                 let prescription = LOCALDATA.prescriptions.find(p => p.id === id);
                 resolve(prescription)
+            });
+        }
+    }
+
+    createPrescription(username, prescription) {
+        if (!window.isLocal) {
+            return new Promise((resolve, reject) => {
+                axios.post("placeholder for prescriptions for given user data endpoint", username, prescription, this.config)
+                    .then(x => resolve(x.data))
+                    .catch(x => {
+                        reject(x);
+                    });
+            });
+        }
+        else {
+            return new Promise((resolve, reject) => {
+                return new Promise((resolve, reject) => resolve(LOCALDATA.prescriptions.push(prescription)));
+            });
+        }
+    }
+
+    editPrescription(username, prescription) {
+        if (!window.isLocal) {
+            return new Promise((resolve, reject) => {
+                axios.patch("placeholder for prescriptions for given user data endpoint", username, prescription, this.config)
+                    .then(x => resolve(x.data))
+                    .catch(x => {
+                        reject(x);
+                    });
+            });
+        }
+        else {
+            return new Promise((resolve, reject) => {
+                //FIXME: swap the prescription with new prescirption
             });
         }
     }

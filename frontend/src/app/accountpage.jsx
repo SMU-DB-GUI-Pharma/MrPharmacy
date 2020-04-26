@@ -10,13 +10,7 @@ export class AccountPage extends React.Component {
     accountRepository = new AccountRepository();
 
     state = {
-        user: {},
-        name: '',
-        age: 0,
-        address: '',
-        insuranceid: 0,
-        username: '',
-        password: ''
+        user: {}
     }
 
     onSave() {
@@ -29,6 +23,13 @@ export class AccountPage extends React.Component {
         this.accountRepository.signUp(new User(this.state.name, this.state.age, this.state.address, this.state.username, this.state.password, this.state.insuranceid))
         this.setState({ redirect: '/' + this.state.username + '/dashboard' })
     }
+
+    changeHandler = event => {
+        event.persist();
+        this.setState(prevState => ({
+            user: { ...prevState.user, [event.target.name]: event.target.value }
+        }))
+    };
 
     render() {
 
@@ -50,33 +51,37 @@ export class AccountPage extends React.Component {
                 <div className="row">
                     <div className="col">
                         <label htmlFor="name">Name:</label>
-                        <input type="text" className="form-control" id="name" name="name" value={this.state.user.name} onChange={e => this.setState({ name: e.target.value })} />
+                        <input type="text" className="form-control" id="name" name="name" value={this.state.user.name} onChange={this.changeHandler}/>
                     </div>
                     <div className="col">
                         <label htmlFor="age">Age:</label>
-                        <input type="number" className="form-control" id="age" name="age" value={this.state.user.age} onChange={e => this.setState({ age: e.target.value })} />
+                        <input type="number" className="form-control" id="age" name="age" value={this.state.user.age} onChange={this.changeHandler} />
                     </div>
                 </div>
                 <div className="mt-2">
                     <label htmlFor="insuranceid">Insurance Information:</label>
-                    <input type="number" name="insuranceid" id="insuranceid" className="form-control" value={this.state.user.insuranceid} onChange={e => this.setState({ insuranceid: e.target.value })}></input>
+                    <input type="number" name="insuranceid" id="insuranceid" className="form-control" value={this.state.user.insuranceid} onChange={this.changeHandler}></input>
                 </div>
                 <div className="mt-2">
                     <label htmlFor="address">Address:</label>
-                    <textarea name="address" id="address" rows="5" className="form-control" value={this.state.user.address} onChange={e => this.setState({ address: e.target.value })}></textarea>
+                    <textarea name="address" id="address" rows="5" className="form-control" value={this.state.user.address} onChange={this.changeHandler}></textarea>
                 </div>
 
                 <div className="row mt-5">
                     <div className="col">
                         <label htmlFor="username">UserName:</label>
-                        <input type="text" className="form-control" id="username" name="username" value={this.state.user.username} onChange={e => this.setState({ username: e.target.value })} />
+                        <input type="text" className="form-control" id="username" name="username" value={this.state.user.username} onChange={this.changeHandler} />
                     </div>
                     <div className="col">
                         <label htmlFor="password">Password:</label>
-                        <input type="password" className="form-control" id="password" name="password" value={this.state.user.password} onChange={e => this.setState({ password: e.target.value })} />
+                        <input type="password" className="form-control" id="password" name="password" value={this.state.user.password} onChange={this.changeHandler} />
                     </div>
                 </div>
             </form>
         </>
+    }
+
+    componentDidMount(){
+        //FIXME: grap user obj from repository & update this.state.user
     }
 }
