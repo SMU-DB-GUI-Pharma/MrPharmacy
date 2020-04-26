@@ -14,26 +14,26 @@ export class AccountPage extends React.Component {
         name: '',
         age: 0,
         address: '',
-        insuranceinfo: '',
+        insuranceid: 0,
         username: '',
         password: ''
     }
 
     onSave() {
-        let update = new User(this.state.name, this.state.age, this.state.address, this.state.username, this.state.password, this.state.insuranceinfo)
+        let update = new User(this.state.name, this.state.age, this.state.address, this.state.username, this.state.password, this.state.insuranceid)
         this.setState({ user: update });
         this.accountRepository.upadteUserInfo(update);
     }
 
     onSignUp() {
-        this.accountRepository.signUp(new User(this.state.name, this.state.age, this.state.address, this.state.username, this.state.password, this.state.insuranceinfo))
-        this.setState({ redirect: '/' + this.state.username + '/dashboard'})
+        this.accountRepository.signUp(new User(this.state.name, this.state.age, this.state.address, this.state.username, this.state.password, this.state.insuranceid))
+        this.setState({ redirect: '/' + this.state.username + '/dashboard' })
     }
 
     render() {
 
         if (this.state.redirect) {
-            return <Redirect to={this.state.redirect}/>
+            return <Redirect to={this.state.redirect} />
         }
 
         let navbar;
@@ -58,13 +58,14 @@ export class AccountPage extends React.Component {
                     </div>
                 </div>
                 <div className="mt-2">
+                    <label htmlFor="insuranceid">Insurance Information:</label>
+                    <input type="number" name="insuranceid" id="insuranceid" className="form-control" value={this.state.user.insuranceid} onChange={e => this.setState({ insuranceid: e.target.value })}></input>
+                </div>
+                <div className="mt-2">
                     <label htmlFor="address">Address:</label>
                     <textarea name="address" id="address" rows="5" className="form-control" value={this.state.user.address} onChange={e => this.setState({ address: e.target.value })}></textarea>
                 </div>
-                <div className="mt-2">
-                    <label htmlFor="insuranceinfo">Insurance Information:</label>
-                    <textarea name="insuranceinfo" id="insuranceinfo" rows="5" className="form-control" value={this.state.user.insuranceinfo} onChange={e => this.setState({ insuranceinfo: e.target.value })}></textarea>
-                </div>
+
                 <div className="row mt-5">
                     <div className="col">
                         <label htmlFor="username">UserName:</label>

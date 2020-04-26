@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { LOCALDATA } from './index.js';
 
 export class AccountRepository {
 
@@ -19,31 +20,46 @@ export class AccountRepository {
                     }
                 })
                 .catch(x => {
-                    alert(x); 
-                    reject(x);
+                    alert("api fetch content failed with: \n" + x + "\n swicted to local data");
+                    window.isLocal = true;
+                    let foundUser = LOCALDATA.account.find(user => user.username === credential.username)
+                    if (foundUser && foundUser.password === credential.password) {
+                        resolve(foundUser);
+                    } else {
+                        reject(x);
+                    }
                 });
         });
     }
 
     signUp(user) {
-        return new Promise((resolve, reject) => {
-            axios.post("placeholder for user data endpoint", user, this.config)
-                .then(x => resolve(x.data))
-                .catch(x => {
-                    alert(x); 
-                    reject(x);
-                });
-        });
+        if (!window.isLocal) {
+            return new Promise((resolve, reject) => {
+                axios.post("placeholder for user data endpoint", user, this.config)
+                    .then(x => resolve(x.data))
+                    .catch(x => {
+                        alert(x);
+                    });
+            });
+        } else {
+            return new Promise((resolve, reject) => resolve(LOCALDATA.account.push(user)));
+        }
     }
 
-    upadteUserInfo(user){
-        return new Promise((resolve, reject) => {
-            axios.patch("placeholder for user data endpoint", user, this.config)
-                .then(x => resolve(x.data))
-                .catch(x => {
-                    alert(x); 
-                    reject(x);
-                });
-        });
+    upadteUserInfo(user) {
+        if (!window.isLocal) {
+            return new Promise((resolve, reject) => {
+                axios.patch("placeholder for user data endpoint", user, this.config)
+                    .then(x => resolve(x.data))
+                    .catch(x => {
+                        alert(x);
+                    });
+            });
+        } else {
+            return new Promise((resolve, reject) => {
+                let foundIndex = LOCALDATA.account.findIndex(x => x.username === user.username);
+                resolve(LOCALDATA.account.splice(foundIndex, 1, user));
+            })
+        }
     }
 }

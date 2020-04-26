@@ -38,7 +38,7 @@ export class LandingPage extends React.Component {
                         <label htmlFor="password">Password:</label>
                         <input type="password" className="form-control" id="password" name="password" onChange={e => this.setState({ password: e.target.value })} />
                     </div>
-                    <button type="button" className="btn btn-primary" onClick={e => this.onLogIn()}>Log In</button>
+                    <button type="button" className="btn btn-primary btn-block" onClick={e => this.onLogIn()}>Log In</button>
                 </form>
             </div>
         </>

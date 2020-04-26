@@ -13,7 +13,7 @@ export class NavBar extends React.Component {
 
     if (this.props.state === "account") {
       rest = <>
-        <button class="btn btn-secondary" type="button" onClick={() => this.props.obj.onSave()}>Save</button>
+        <button className="btn btn-secondary" type="button" onClick={() => this.props.obj.onSave()}>Save</button>
       </>;
     } else if (this.props.state === "landing") {
       rest = <>
@@ -26,12 +26,12 @@ export class NavBar extends React.Component {
     } else if (this.props.state === "dashboard") {
       rest =
         <>
-          <form class="form-inline">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" onChange={e => this.setState({ searchingString: e.target.value })} />
-            <Link class="btn btn-secondary my-2 my-sm-0" type="button" to={"/" + this.props.username + "/" + this.state.searchingString}>Search</Link>
+          <form className="form-inline">
+            <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" onChange={e => this.setState({ searchingString: e.target.value })} />
+            <Link className="btn btn-secondary my-2 my-sm-0" type="button" to={"/" + this.props.username + "/" + this.state.searchingString}>Search</Link>
           </form>
-          <Link class="btn btn-secondary my-2 my-sm-0" type="button" to={"/" + this.props.username + "/account"}>My Account</Link>
-          <Link class="btn btn-secondary my-2 my-sm-0" type="button" to={"/" + this.props.username + "/prescription-creation"}>Add a Prescription</Link>
+          <Link className="btn btn-secondary my-2 my-sm-0" type="button" to={"/" + this.props.username + "/account"}>My Account</Link>
+          <Link className="btn btn-secondary my-2 my-sm-0" type="button" to={"/" + this.props.username + "/prescription-creation"}>Add a Prescription</Link>
         </>
     }
 
