@@ -128,14 +128,18 @@ app.get('/searchpharmacies/:insuranceID', function (req, res) {
 
 //////////////////////////////////////// PRESCRIPTION BRANDS ////////////////////////////////////////////
  //GET; return all of the Prescription Brands
+//http://localhost:8000/prescriptionbrands
 app.get('/prescriptionbrands', function (req, res) {;
     connection.query("Select * from PrescriptionBrand;", function (err, result, fields) {
         if (err) throw err;
         res.end(JSON.stringify(result)); // Result in JSON format
     });
    });
+
+
 ///////////////////////////////////////// PRESCRIPTION ////////////////////////////////////////////////
  //GET; return all of the Prescriptions
+//http://localhost:8000/prescriptions
 app.get('/prescriptions', function (req, res) {
   connection.query("Select * from Prescription;", function (err, result, fields) {
       if (err) throw err;
@@ -145,18 +149,42 @@ app.get('/prescriptions', function (req, res) {
 
 
 //1.1 [CREATE] non-recurring prescription
-//Check
-app.post('/addNonRecurrPrescription', async (req, res) => {  
-	var querystring = `INSERT INTO Prescription (PrescriptionName, StartDate, isRefillable, isRecurring, PrescriptionDescription, Comments,
-    Brand_ID, EndDate, BuyPrice, RefillDate, RefillCount, PausePrescription, Code_Pin) VALUES ('${connection.escape(req.params.PrescriptionName)}', '${con.escape(req.params.StartDate)}', '${con.escape(req.params.isRefillable)}', '0', '${con.escape(req.params.PrescriptionDescription)}', '${con.escape(req.params.Comments)}', '${con.escape(req.params.Brand_ID)}', '${con.escape(req.params.EndDate)}', '${con.escape(req.params.BuyPrice)}', '${con.escape(req.params.RefillDate)}', '${con.escape(req.params.RefillCount)}', '${con.escape(req.params.PausePrescription)}', '${con.escape(req.params.Code_Pin)}');`;
-	connection.query(querystring, function (err, result, fields) {
-		if (err) throw err;
-		res.end(JSON.stringify(result)); // Result in JSON format
-	});
-});
+//http://localhost:8000/prescription/addnonrecurring/:name/:startdate/:isrefillable/:description/:comments/:brand_id/:enddate/:price/:refilldate/:refillcount/:code_pin
+//Sample parameters below, used in filling in the required parameters listed
+        // "PrescriptionName": "Inserting Dummy",
+        // "StartDate": "2020-02-20T00:00:00.000Z",
+        // "isRefillable": 0,
+        // "PrescriptionDescription": "This is a dummy insert",
+        // "Comments": "Dummy prescript is good",
+        // "Brand_ID": 5,
+        // "EndDate": "2025-02-20T00:00:00.000Z",
+        // "BuyPrice": 100,
+        // "RefillDate": "2022-02-20T00:00:00.000Z",
+        // "RefillCount": 5,
+        // "Code_Pin": 2
+app.post('/prescription/addnonrecurring/:name/:startdate/:isrefillable/:description/:comments/:brand_id/:enddate/:price/:refilldate/:refillcount/:code_pin', async(req, res) => {
+  var prescriptName = req.param('name')
+  var start = req.param('startdate')
+  var refillable = req.param('isrefillable')
+  var descript = req.param('description')
+  var comment = req.param('comments')
+  var brand = req.param('brand_id')
+  var end = req.param('enddate')
+  var cost = req.param('price')
+  var refillDate = req.param('refilldate')
+  var refillCount = req.param('refillcount')
+  var code = req.param('code_pin')
+  connection.query(`INSERT INTO Prescription (PrescriptionName, StartDate, isRefillable, isRecurring, 
+  PrescriptionDescription, Comments, Brand_ID, EndDate, BuyPrice, RefillDate, RefillCount, PausePrescription, 
+  Code_Pin) VALUES (?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, NULL, ?);`, [prescriptName, start, refillable, descript, comment, brand, end, cost, refillDate, refillCount, code], function (err, result, fields) {
+          if (err) throw err;
+          res.end(JSON.stringify(result)); // Result in JSON format
+     });
+  });
 
 //1.2 [READ] prescriptions that run out and are no longer eligible for refills
 //to be designated as a past prescription
+//http://localhost:8000/prescriptionOutOfUse
 app.get('/prescriptionOutOfUse', function (req, res) {
   connection.query("Select * from Prescription WHERE isRefillable = 0 AND EndDate < '2020-04-25';", function (err, result, fields) {
       if (err) throw err;
@@ -165,107 +193,171 @@ app.get('/prescriptionOutOfUse', function (req, res) {
  });
 
 //1.3 [UPDATE] I want to be able to edit a prescription that I have entered
-//Not working
-app.put('/updatePrescriptionName/:PrescriptionName', async (req, res) => {
-  var pCode = `SET SQL_SAFE_UPDATES = 0; UPDATE Prescription SET PrescriptionName = ('${con.escape(req.params.NewPrescriptionName)}') WHERE PrescriptionName = ('${con.escape(req.params.PrescriptionName)}') `;
-	con.query(pCode, function (err, result, fields) {
+//Update the name of the prescription
+//Parameters; Old name = old prescription name; New name = new prescription name
+//http://localhost:8000/prescription/updatename/:oldname/:newname
+app.put('/prescription/updatename/:oldname/:newname', async (req, res) => {
+  var prevName = req.param('oldname')
+  var newName = req.param('newname')
+  connection.query("UPDATE Prescription Set PrescriptionName = ? WHERE PrescriptionName = ?;", [newName, prevName], function(err, result, fields) {
 		if (err) throw err;
-		//console.log(result);
 		res.end(JSON.stringify(result)); 
 	});
 });
 
-app.put('/updatePrescriptionStartDate/:PrescriptionName', async (req, res) => {
-  var pCode = `SET SQL_SAFE_UPDATES = 0; UPDATE Prescription SET StartDate = ('${con.escape(req.params.StartDate)}') WHERE PrescriptionName = ('${con.escape(req.params.PrescriptionName)}') `;
-	con.query(pCode, function (err, result, fields) {
+
+//1.3 [UPDATE] I want to be able to edit a prescription that I have entered
+//Update the StartDate of the prescription
+//Parameters; Name = name of prescription; New date = new start date
+//http://localhost:8000/prescription/updatestartdate/:name/:newdate
+app.put('/prescription/updatestartdate/:name/:newdate', async (req, res) => {
+  var prevName = req.param('name')
+  var newName = req.param('newdate')
+  connection.query("UPDATE Prescription Set StartDate = ? WHERE PrescriptionName = ?;", [newName, prevName], function(err, result, fields) {
 		if (err) throw err;
-		//console.log(result);
 		res.end(JSON.stringify(result)); 
 	});
 });
 
-app.put('/updatePrescriptionRefillable/:PrescriptionName', async (req, res) => {
-  var updateRefill= `SET SQL_SAFE_UPDATES = 0; UPDATE Prescription SET isRefillable = ('${con.escape(req.params.isRefillable)}') WHERE PrescriptionName = ('${con.escape(req.params.PrescriptionName)}') `;
-	con.query(updateRefill, function (err, result, fields) {
+
+//1.3 [UPDATE] I want to be able to edit a prescription that I have entered
+//Update whether the prescription is refillable
+//Parameters; Name = name of prescription; Refillable = new is refillable
+//http://localhost:8000/prescription/updaterefillable/:name/:refillable
+app.put('/prescription/updaterefillable/:name/:refillable', async (req, res) => {
+  var prevName = req.param('name')
+  var refill = req.param('refillable')
+  connection.query("UPDATE Prescription Set isRefillable = ? WHERE PrescriptionName = ?;", [refill, prevName], function(err, result, fields) {
 		if (err) throw err;
-		//console.log(result);
 		res.end(JSON.stringify(result)); 
 	});
 });
 
-app.put('/updatePrescriptionRecurring/:PrescriptionName', async (req, res) => {
-  var pCode = `SET SQL_SAFE_UPDATES = 0; UPDATE Prescription SET isRecurring = ('${con.escape(req.params.isRecurring)}') WHERE PrescriptionName = ('${con.escape(req.params.PrescriptionName)}') `;
-	con.query(pCode, function (err, result, fields) {
+//1.3 [UPDATE] I want to be able to edit a prescription that I have entered
+//Update whether the prescription is recurring
+//Parameters; Name = name of prescription; Recurr = new is recurring value
+//http://localhost:8000/prescription/updaterecurring/:name/:recurr
+app.put('/prescription/updaterecurring/:name/:recurr', async (req, res) => {
+  var prevName = req.param('name')
+  var recurring = req.param('recurr')
+  connection.query("UPDATE Prescription Set isRecurring = ? WHERE PrescriptionName = ?;", [recurring, prevName], function(err, result, fields) {
 		if (err) throw err;
-		//console.log(result);
 		res.end(JSON.stringify(result)); 
 	});
 });
 
-app.put('/updatePrescriptionDescription/:PrescriptionName', async (req, res) => {
-  var pCode = `SET SQL_SAFE_UPDATES = 0; UPDATE Prescription SET PrescriptionDescription = ('${con.escape(req.params.PrescriptionDescription)}') WHERE PrescriptionName = ('${con.escape(req.params.PrescriptionName)}') `;
-	con.query(pCode, function (err, result, fields) {
+//1.3 [UPDATE] I want to be able to edit a prescription that I have entered
+//Update description of the prescription
+//Parameters; Name = name of prescription; Descript = new description
+//http://localhost:8000/prescription/updatedescript/:name/:descript
+app.put('/prescription/updatedescript/:name/:descript', async (req, res) => {
+  var prevName = req.param('name')
+  var description = req.param('descript')
+  connection.query("UPDATE Prescription Set PrescriptionDescription = ? WHERE PrescriptionName = ?;", [description, prevName], function(err, result, fields) {
 		if (err) throw err;
-		//console.log(result);
 		res.end(JSON.stringify(result)); 
 	});
 });
 
-app.put('/updatePrescriptionComments/:PrescriptionName', async (req, res) => {
-  var pCode = `SET SQL_SAFE_UPDATES = 0; UPDATE Prescription SET Comments = ('${con.escape(req.params.Comments)}') WHERE PrescriptionName = ('${con.escape(req.params.PrescriptionName)}') `;
-	con.query(pCode, function (err, result, fields) {
+//1.3 [UPDATE] I want to be able to edit a prescription that I have entered
+//Update comment of the prescription
+//Parameters; Name = name of prescription; Comment = new comment
+//http://localhost:8000/prescription/updatecomment/:name/:comment
+app.put('/prescription/updatecomment/:name/:comment', async (req, res) => {
+  var prevName = req.param('name')
+  var newComment = req.param('comment')
+  connection.query("UPDATE Prescription Set Comments = ? WHERE PrescriptionName = ?;", [newComment, prevName], function(err, result, fields) {
 		if (err) throw err;
-		//console.log(result);
 		res.end(JSON.stringify(result)); 
 	});
 });
 
-app.put('/updatePrescriptionEndDate/:PrescriptionName', async (req, res) => {
-  var pCode = `SET SQL_SAFE_UPDATES = 0; UPDATE Prescription SET EndDate = ('${con.escape(req.params.EndDate)}') WHERE PrescriptionName = ('${con.escape(req.params.PrescriptionName)}') `;
-	con.query(pCode, function (err, result, fields) {
+
+//1.3 [UPDATE] I want to be able to edit a prescription that I have entered
+//Update EndDate of the prescription
+//Parameters; Name = name of prescription; Enddate = new end date
+//http://localhost:8000/prescription/updateenddate/:name/:enddate
+app.put('/prescription/updateenddate/:name/:enddate', async (req, res) => {
+  var prevName = req.param('name')
+  var endDate = req.param('enddate')
+  connection.query("UPDATE Prescription Set EndDate = ? WHERE PrescriptionName = ?;", [endDate, prevName], function(err, result, fields) {
 		if (err) throw err;
-		//console.log(result);
 		res.end(JSON.stringify(result)); 
 	});
 });
 
-app.put('/updatePrescriptionBuyPrice/:PrescriptionName', async (req, res) => {
-  var pCode = `SET SQL_SAFE_UPDATES = 0; UPDATE Prescription SET BuyPrice = ('${con.escape(req.params.BuyPrice)}') WHERE PrescriptionName = ('${con.escape(req.params.PrescriptionName)}') `;
-	con.query(pCode, function (err, result, fields) {
+
+//1.3 [UPDATE] I want to be able to edit a prescription that I have entered
+//Update Buy Price of the prescription
+//Parameters; Name = name of prescription; Price = new buy price
+//http://localhost:8000/prescription/updatebuyprice/:name/:price
+app.put('/prescription/updatebuyprice/:name/:price', async (req, res) => {
+  var prevName = req.param('name')
+  var buyPrice = req.param('price')
+  connection.query("UPDATE Prescription Set BuyPrice = ? WHERE PrescriptionName = ?;", [buyPrice, prevName], function(err, result, fields) {
 		if (err) throw err;
-		//console.log(result);
 		res.end(JSON.stringify(result)); 
 	});
 });
 
-app.put('/updatePrescriptionRefillDate/:PrescriptionName', async (req, res) => {
-  var pCode = `SET SQL_SAFE_UPDATES = 0; UPDATE Prescription SET RefillDate = ('${con.escape(req.params.RefillDate)}') WHERE PrescriptionName = ('${con.escape(req.params.PrescriptionName)}') `;
-	con.query(pCode, function (err, result, fields) {
+
+//1.3 [UPDATE] I want to be able to edit a prescription that I have entered
+//Update Refill date of the prescription
+//Parameters; Name = name of prescription; Refill Date = new refill date
+//http://localhost:8000/prescription/updaterefilldate/:name/:refilldate
+app.put('/prescription/updaterefilldate/:name/:refilldate', async (req, res) => {
+  var prevName = req.param('name')
+  var refillDate = req.param('refilldate')
+  connection.query("UPDATE Prescription Set RefillDate = ? WHERE PrescriptionName = ?;", [refillDate, prevName], function(err, result, fields) {
 		if (err) throw err;
-		//console.log(result);
 		res.end(JSON.stringify(result)); 
 	});
 });
 
-app.put('/updatePrescriptionRefillCount/:PrescriptionName', async (req, res) => {
-  var pCode = `SET SQL_SAFE_UPDATES = 0; UPDATE Prescription SET RefillCount = ('${con.escape(req.params.RefillCount)}') WHERE PrescriptionName = ('${con.escape(req.params.PrescriptionName)}') `;
-	con.query(pCode, function (err, result, fields) {
+
+//1.3 [UPDATE] I want to be able to edit a prescription that I have entered
+//Update Refill count of the prescription
+//Parameters; Name = name of prescription; Refill Count = new refill count
+//http://localhost:8000/prescription/updaterefillcount/:name/:refillcount
+app.put('/prescription/updaterefillcount/:name/:refillcount', async (req, res) => {
+  var prevName = req.param('name')
+  var refillCount= req.param('refillcount')
+  connection.query("UPDATE Prescription Set RefillCount = ? WHERE PrescriptionName = ?;", [refillCount, prevName], function(err, result, fields) {
 		if (err) throw err;
-		//console.log(result);
 		res.end(JSON.stringify(result)); 
 	});
 });
 
-app.put('/updatePrescriptionPause/:PrescriptionName', async (req, res) => {
-  var pCode = `SET SQL_SAFE_UPDATES = 0; UPDATE Prescription SET PausePrescription = ('${con.escape(req.params.PausePrescription)}') WHERE PrescriptionName = ('${con.escape(req.params.PrescriptionName)}') `;
-	con.query(pCode, function (err, result, fields) {
+
+//1.3 [UPDATE] I want to be able to edit a prescription that I have entered
+//Update pause prescription
+//Parameters; Name = name of prescription; Pause date = new pause prescription date
+//http://localhost:8000/prescription/pauseprescription/:name/:pausedate
+app.put('/prescription/pauseprescription/:name/:pausedate', async (req, res) => {
+  var prevName = req.param('name')
+  var pauseDate = req.param('pausedate')
+  connection.query("UPDATE Prescription Set PausePrescription = ? WHERE PrescriptionName = ?;", [pauseDate, prevName], function(err, result, fields) {
 		if (err) throw err;
-		//console.log(result);
 		res.end(JSON.stringify(result)); 
 	});
 });
+
+
+//1.3 [UPDATE] I want to be able to edit a prescription that I have entered
+//Update paused prescription so it is not paused
+//Parameters; Name = name of prescription
+//http://localhost:8000/prescription/unpauseprescription/:name
+app.put('/prescription/unpauseprescription/:name', async (req, res) => {
+  var prevName = req.param('name')
+  connection.query("UPDATE Prescription Set PausePrescription = NULL WHERE PrescriptionName = ?;", prevName, function(err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); 
+	});
+});
+
 
 //1.4 [READ] I want to sort prescriptions by the date they were added
+//http://localhost:8000/prescriptionSortByAddDate
 app.get('/prescriptionSortByAddDate', function (req, res) {
     connection.query("Select * from Prescription order by StartDate;", function (err, result, fields) {
         if (err) throw err;
@@ -273,10 +365,12 @@ app.get('/prescriptionSortByAddDate', function (req, res) {
     });
    });
 
+
 //1.5 [DELETE] non-recurring prescription
-app.delete('/deleteprescription/:PrescriptionName', async (req, res) => {
-	var prescriptionName = req.param('PrescriptionName')
-	connection.query("SET SQL_SAFE_UPDATES = 0; DELETE FROM Prescription WHERE PrescriptionName = ?;  SET SQL_SAFE_UPDATES = 1;", prescriptionName,function (err, result, fields) {
+// http://localhost:8000/deleteprescription/:name
+app.delete('/deleteprescription/:name', async (req, res) => {
+	var prescriptionName = req.param('name')
+	connection.query("DELETE FROM Prescription WHERE PrescriptionName = ?;", prescriptionName,function (err, result, fields) {
 		if (err) 
 			return console.error(error.message);
 		res.end(JSON.stringify(result)); 
@@ -285,6 +379,7 @@ app.delete('/deleteprescription/:PrescriptionName', async (req, res) => {
 });
 
 //1.6 I want to be able to search my prescription by name out of all my prescriptions
+//http://localhost:8000/prescriptionsearch/:name
 app.get('/prescriptionsearch/:name', function (req, res) {
   var search = req.param('name')
   connection.query("Select * From Prescription WHERE PrescriptionName = ?;",search, function (err, result, fields) {
@@ -296,6 +391,7 @@ app.get('/prescriptionsearch/:name', function (req, res) {
 
 
 //1.7 I want to be able to filter prescriptions by recurring and non-recurring
+//http://localhost:8000/prescriptionShowRecurring
  app.get('/prescriptionShowRecurring', function (req, res) { //Case statement
     connection.query('Select * From Prescription WHERE isRecurring = 1;', function (err, result, fields) {
         if (err) throw err;
@@ -303,6 +399,7 @@ app.get('/prescriptionsearch/:name', function (req, res) {
     });
    });
 
+//http://localhost:8000/prescriptionShowNonRecurring
 app.get('/prescriptionShowNonRecurring', function (req, res) { //Case statement
       connection.query('Select * From Prescription WHERE isRecurring = 0;', function (err, result, fields) {
           if (err) throw err;
@@ -312,19 +409,13 @@ app.get('/prescriptionShowNonRecurring', function (req, res) { //Case stat
 
 //1.8 [UPDATE] comment on a prescription
 //Think I need to change this one
-app.put('/prescription/:PrescriptionName', async (req, res) => {
-  var pCode = `SET SQL_SAFE_UPDATES = 0; UPDATE Prescription SET Comments = ('${con.escape(req.params.Comments)}') WHERE PrescriptionName = ('${con.escape(req.params.PrescriptionName)}') `;
-	con.query(pCode, function (err, result, fields) {
-		if (err) throw err;
-		//console.log(result);
-		res.end(JSON.stringify(result)); 
-	});
-});
+
 
 // 1.9 [DELETE] comment on a prescription
-app.delete('/prescription/:PrescriptionName', async (req, res) => {
-	var prescriptionName = req.param('PrescriptionName')
-	con.query(`SET SQL_SAFE_UPDATES = 0; UPDATE Prescription SET Comments = ' ' WHERE PrescriptionName = ?;  SET SQL_SAFE_UPDATES = 1;`, prescriptionName,function (err, result, fields) {
+//http://localhost:8000/prescription/deletecomment/:name
+app.delete('/prescription/deletecomment/:name', async (req, res) => {
+	var prescriptionName = req.param('name')
+	connection.query(`UPDATE Prescription SET Comments = ' ' WHERE PrescriptionName = ?;`, prescriptionName,function (err, result, fields) {
 		if (err) 
 			return console.error(error.message);
 		res.end(JSON.stringify(result)); 
@@ -333,21 +424,47 @@ app.delete('/prescription/:PrescriptionName', async (req, res) => {
 });
 
 // 2.1 I want medications that are recurring to be distinguished from the rest
+//See 1.7
 
-// 2.2 [CREATE] recurring medication
-app.post('/addRecurrPrescription', async (req, res) => {  
-	var querystring = `INSERT INTO Prescription (PrescriptionName, StartDate, isRefillable, isRecurring, PrescriptionDescription, Comments,
-    Brand_ID, EndDate, BuyPrice, RefillDate, RefillCount, PausePrescription, Code_Pin) VALUES ('${con.escape(req.params.PrescriptionName)}', '${con.escape(req.params.StartDate)}', '${con.escape(req.params.isRefillable)}', '1', '${con.escape(req.params.PrescriptionDescription)}', '${con.escape(req.params.Comments)}', '${con.escape(req.params.Brand_ID)}', '${con.escape(req.params.EndDate)}', '${con.escape(req.params.BuyPrice)}', '${con.escape(req.params.RefillDate)}', '${con.escape(req.params.RefillCount)}', '${con.escape(req.params.PausePrescription)}', '${con.escape(req.params.Code_Pin)}');`;
-	con.query(querystring, function (err, result, fields) {
-		if (err) throw err;
-		res.end(JSON.stringify(result)); // Result in JSON format
-	});
-});
+//2.2 [CREATE] recurring medication
+//Sample parameters below, used in filling in the required parameters listed
+        // "PrescriptionName": "Inserting Dummy",
+        // "StartDate": "2020-02-20T00:00:00.000Z",
+        // "isRefillable": 0,
+        // "PrescriptionDescription": "This is a dummy insert",
+        // "Comments": "Dummy prescript is good",
+        // "Brand_ID": 5,
+        // "EndDate": "2025-02-20T00:00:00.000Z",
+        // "BuyPrice": 100,
+        // "RefillDate": "2022-02-20T00:00:00.000Z",
+        // "RefillCount": 5,
+        // "Code_Pin": 2
+//http://localhost:8000/prescription/addrecurring/:name/:startdate/:isrefillable/:description/:comments/:brand_id/:enddate/:price/:refilldate/:refillcount/:code_pin
+app.post('/prescription/addrecurring/:name/:startdate/:isrefillable/:description/:comments/:brand_id/:enddate/:price/:refilldate/:refillcount/:code_pin', async(req, res) => {
+    var prescriptName = req.param('name')
+    var start = req.param('startdate')
+    var refillable = req.param('isrefillable')
+    var descript = req.param('description')
+    var comment = req.param('comments')
+    var brand = req.param('brand_id')
+    var end = req.param('enddate')
+    var cost = req.param('price')
+    var refillDate = req.param('refilldate')
+    var refillCount = req.param('refillcount')
+    var code = req.param('code_pin')
+    connection.query(`INSERT INTO Prescription (PrescriptionName, StartDate, isRefillable, isRecurring, 
+    PrescriptionDescription, Comments, Brand_ID, EndDate, BuyPrice, RefillDate, RefillCount, PausePrescription, 
+    Code_Pin) VALUES (?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, NULL, ?);`, [prescriptName, start, refillable, descript, comment, brand, end, cost, refillDate, refillCount, code], function (err, result, fields) {
+        if (err) throw err;
+        res.end(JSON.stringify(result)); // Result in JSON format
+      });
+    });
 
 // 2.3 [UPDATE] I want to change recurring information of added medications
 // See 1.3
 
 // 2.4 I want to pause a recurring medication for a period of time.
+//See 1.3
 
 
 
@@ -355,6 +472,7 @@ app.post('/addRecurrPrescription', async (req, res) => {
 //See 1.5
 
 // 3.1 I want to distinguish my prescriptions that need to be refilled from the rest
+//http://localhost:8000/refillables
 app.get('/refillables', function (req, res) {
   connection.query("Select * from Prescription where isRefillable = 1;", function (err, result, fields) {
         if (err) throw err; //Need to figure out how to add if doesn't exist
@@ -363,6 +481,7 @@ app.get('/refillables', function (req, res) {
    });
 
 // 3.2 I want a prescription that is about to run out to be able to be distinguished from the others
+//http://localhost:8000/refillables
 app.get('/prescriptiondistinguishrunout', function (req, res) {
     connection.query("Select * From Prescription Order by RefillDate asc, EndDate asc;", function (err, result, fields) {
           if (err) throw err; //Need to figure out how to add if doesn't exist
@@ -371,6 +490,7 @@ app.get('/prescriptiondistinguishrunout', function (req, res) {
      });
 
 // 3.4 I want to see a recommended refill date for eligible prescriptions
+//http://localhost:8000/prescription/recommendedrefilldate/:prescriptionname
 app.get('/prescription/recommendedrefilldate/:prescriptionname', function (req, res) {
   var prescriptionName = req.param('prescriptionname')
   connection.query("Select RefillDate as RecommendedRefillDate From Prescription where PrescriptionName = ?;", prescriptionName, function (err, result, fields) {
@@ -381,6 +501,7 @@ app.get('/prescription/recommendedrefilldate/:prescriptionname', function (req
 
 
 // 3.5 [READ] remaining refills
+//http://localhost:8000/prescription/remainingrefills/:prescriptionname
 app.get('/prescription/remainingrefills/:prescriptionname', function (req, res) {
   var prescriptionName = req.param('prescriptionname')
   connection.query("Select RefillCount as RemainingRefills From Prescription where PrescriptionName = ?;", prescriptionName, function (err, result, fields) {
@@ -390,12 +511,13 @@ app.get('/prescription/remainingrefills/:prescriptionname', function (req, re
    });
 
 // 4.1 [READ] dosage frequency
-// Can't do
+//Same as remaining refills?
 
 // 4.2 [READ] potential medication interactions
 // Same as 4.5
 
 // 4.3 [READ] medication ingredients
+//http://localhost:8000/prescription/ingredients/:prescriptionname
 app.get('/prescription/ingredients/:prescriptionname', function (req, res) {
   var prescriptionName = req.param('prescriptionname')
   connection.query("Select PrescriptionDescription as Ingredients From Prescription where PrescriptionName = ?;", prescriptionName, function (err, result, fields) {
@@ -405,6 +527,7 @@ app.get('/prescription/ingredients/:prescriptionname', function (req, res) {
    });
 
 // 4.4 [READ] medication shelf life
+//http://localhost:8000/prescription/shelflife/:prescriptionname
 app.get('/prescription/shelflife/:prescriptionname', function (req, res) {
   var prescriptionName = req.param('prescriptionname')
   connection.query("Select EndDate as ShelfLife From Prescription where PrescriptionName = ?;", prescriptionName, function (err, result, fields) {
@@ -414,6 +537,7 @@ app.get('/prescription/shelflife/:prescriptionname', function (req, res) {
    });
 
 // 4.5 [READ] medication effects
+//http://localhost:8000/prescription/effects/:prescriptionname
 app.get('/prescription/effects/:prescriptionname', function (req, res) {
   var prescriptionName = req.param('prescriptionname')
   connection.query("Select PrescriptionDescription as Effects From Prescription where PrescriptionName = ?;", prescriptionName, function (err, result, fields) {
