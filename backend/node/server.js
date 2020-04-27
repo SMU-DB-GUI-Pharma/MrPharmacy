@@ -458,8 +458,18 @@ app.get('/prescriptionShowNonRecurring', function (req, res) { //Case stat
       });
      });
 
-//1.8 [UPDATE] comment on a prescription
-//Think I need to change this one
+//1.8 [UPDATE] comment on a prescription by adding one on
+//Update comment of the prescription, adding a semi-colon and space before it
+//Parameters; Name = name of prescription; Comment = new comment adding on
+//http://localhost:8000/prescription/updatewithadditionalcomment/:name/:comment
+app.put('/prescription/updatewithadditionalcomment/:name/:comment', async (req, res) => {
+  var prevName = req.param('name')
+  var newComment = req.param('comment')
+  connection.query(`UPDATE Prescription Set Comments = Concat(Concat(Comments,"; "), ?) WHERE PrescriptionName = ?;`, [newComment, prevName], function(err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); 
+	});
+});
 
 
 // 1.9 [DELETE] comment on a prescription
