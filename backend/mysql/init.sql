@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `MrPharma`.`User` (
     `TotalCostPrescriptions` DECIMAL(10,2) NOT NULL, 
     `MonthlyCost` DECIMAL(10,2) NOT NULL,
     `FinancialReport` MEDIUMBLOB NULL,
-    `Insurance` NULL;
+    `Insurance` VARCHAR(45) NULL
 );
 
 -- populate Users with dummy data
@@ -112,7 +112,8 @@ VALUES
 ('Johnson & Johnson', 'an American multinational corporation founded in 1886 that develops medical devices, pharmaceutical and consumer packaged goods',NULL),
 ('Bayer AG', 'a German company with core competencies in the fields of healthcare, agriculture and high-tech polymer materials.', NULL),
 ('Seattle Genetics', ' biotechnology company focused on developing and commercializing innovative, empowered monoclonal antibody-based therapies for the treatment of cancer',NULL);
-
+ 
+ 
 -- create Prescription table
 CREATE TABLE IF NOT EXISTS `MrPharma`.`Prescription` (
   `PrescriptionID` INT NOT NULL AUTO_INCREMENT,
@@ -141,15 +142,15 @@ INSERT INTO `Prescription`
 (PrescriptionName, StartDate, isRefillable, isRecurring, PrescriptionDescription, Comments,
 Brand_ID, EndDate, BuyPrice, RefillDate, RefillCount, PausePrescription, Code_Pin)
 VALUES
-('Hydrocodone', '2020-11-17', 1,1, 'An opioid used to treat severe pain of a prolonged duration, if other measures are not sufficient', 'I like this drug', 1 , '2020-02-17', '34.52', '2020-02-05', 4, NULL, 1),
-('Lisinopril', '2020-02-20', 0,1, 'An ACE inhibitor, used to treat high blood pressure (hypertension)' ,'I dont like this drug', 1, '2020-03-20', '58.12', '2020-03-10', 3, NULL, 1),
-('Amoxicillin', '2020-04-18', 1,0, 'A penicillin antibiotic that fights bacteria' , 'This drug is okay', 1, '2020-06-17', '45.02', '2020-05-05', 1, NULL, 2),
-('Azithromycin', '2020-01-01', 0,1, 'An antibiotic that can treat various types of infections, including pink eye', 'I can not spell this drug', 1, '2020-03-01', '25.25', '2020-02-02', 1, NULL,2),
-('Xanax', '2020-11-11', 1,1, 'A benzodiazepine that can treat anxiety and panic disorder', 'This drug is expensive', 1, '2020-11-13', '60.80', '2020-11-12', 4, NULL, 6),
-('Promethazine', '2020-06-06', 1,0, 'An antihistamine that can treat allergies and motion sickness', 'This drug makes me feel tired', 1 , '2020-07-06', '02.99', '2020-07-05', 6, NULL, 5),
-('Lipitor', '2020-04-24' , 0, 1, 'A statin medication used to prevent cardiovascular disease in those at high risk and treat abnormal lipid levels', 'This drug has improved my cardiovascular health', 1, '2020-05-24', '5.99', '2020-04-24', 4, NULL, 3),
-('Prednisone', '2020-02-14', 1, 1, 'A glucocorticoid medication mostly used to suppress the immune system and decrease inflammation in conditions such as asthma, COPD, and rheumatologic diseases', 'This medicine makes me feel nauseous', 1, '2020-08-24', '10.99', '2020-06-24', 3, NULL, 4),
-('Gabapentin', '2020-03-15', 1, 0, 'An anticonvulsant medication used to treat partial seizures, neuropathic pain, hot flashes, and restless legs syndrome', 'This medicine helps me with my issues', 1, '2020-05-24', '12.99', '2020-09-01', 5, NULL, 8);
+('Hydrocodone', '2020-11-17', 1,1, 'An opioid used to treat severe pain of a prolonged duration, if other measures are not sufficient', 'I like this drug', 1 , '2020-02-17', '34.52', '2020-02-05', 4, NULL, 1111),
+('Lisinopril', '2020-02-20', 0,1, 'An ACE inhibitor, used to treat high blood pressure (hypertension)' ,'I dont like this drug', 1, '2020-03-20', '58.12', '2020-03-10', 3, NULL, 2222),
+('Amoxicillin', '2020-04-18', 1,0, 'A penicillin antibiotic that fights bacteria' , 'This drug is okay', 1, '2020-06-17', '45.02', '2020-05-05', 1, NULL, 2222),
+('Azithromycin', '2020-01-01', 0,1, 'An antibiotic that can treat various types of infections, including pink eye', 'I can not spell this drug', 1, '2020-03-01', '25.25', '2020-02-02', 1, NULL,3333),
+('Xanax', '2020-11-11', 1,1, 'A benzodiazepine that can treat anxiety and panic disorder', 'This drug is expensive', 1, '2020-11-13', '60.80', '2020-11-12', 4, NULL, 6666),
+('Promethazine', '2020-06-06', 1,0, 'An antihistamine that can treat allergies and motion sickness', 'This drug makes me feel tired', 1 , '2020-07-06', '02.99', '2020-07-05', 6, NULL, 5555),
+('Lipitor', '2020-04-24' , 0, 1, 'A statin medication used to prevent cardiovascular disease in those at high risk and treat abnormal lipid levels', 'This drug has improved my cardiovascular health', 1, '2020-05-24', '5.99', '2020-04-24', 4, NULL, 3333),
+('Prednisone', '2020-02-14', 1, 1, 'A glucocorticoid medication mostly used to suppress the immune system and decrease inflammation in conditions such as asthma, COPD, and rheumatologic diseases', 'This medicine makes me feel nauseous', 1, '2020-08-24', '10.99', '2020-06-24', 3, NULL, 7777),
+('Gabapentin', '2020-03-15', 1, 0, 'An anticonvulsant medication used to treat partial seizures, neuropathic pain, hot flashes, and restless legs syndrome', 'This medicine helps me with my issues', 1, '2020-05-24', '12.99', '2020-09-01', 5, NULL, 8888);
 
 -- create user called `manager` with password `Password`
 -- CREATE USER 'manager'@'backend-db' IDENTIFIED BY 'Password';
@@ -162,3 +163,4 @@ VALUES
 
 -- -- flush them privileges
 -- FLUSH PRIVILEGES;
+

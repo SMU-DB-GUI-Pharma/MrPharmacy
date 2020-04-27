@@ -74,9 +74,7 @@ app.get('/insurances', function (req, res) {
 });
 
 //User Story 3.3 [CREATE] - I want to be able to update my insurance information in my profile
-
-//http://localhost:8000/addInsurance/:pinCode?insuranceName=Molina Healthcare
-//http://localhost:8000/addInsurance/:pinCode?insuranceName=Blue Cross Blue Shield
+//http://localhost:8000/updateInsurance/:username?insuranceName=Humana
 //replace ':username' with username from User table, replace everything after = to an InsuranceName
 app.put('/updateInsurance/:username', async (req, res) => {
   var username = req.param('username');
@@ -171,6 +169,18 @@ app.get('/searchpharmacies', function (req, res) {
   var insurance1 = req.param('insuranceChoice1');
   var insurance2 = req.param('insuranceChoice2');
   connection.query("SELECT DISTINCT p.PharmacyName FROM Pharmacy p JOIN  Insurance i on p.InsuranceID1 = i.InsuranceID join Insurance i2 on p.InsuranceID2 = i2.InsuranceID WHERE i.Company = ? OR i2.Company = ? ;", [insurance1, insurance2], function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
+
+//User Story 5.5 [READ] I want to be able to search for pharmacies based on price of prescriptions (replace ':price' with a price and ':prescription' with a PrescriptionName)
+http://localhost:8000/searchpharmacies/:price/:prescription
+app.get('/searchpharmacies/:price/:prescription', function (req, res) {
+  console.log("inside filter price API call");
+  var price = req.param('price');
+  var prescription = req.param('prescription');
+  connection.query("SELECT DISTINCT p.PharmacyName, ps.PrescriptionName FROM Pharmacy p JOIN PrescriptionBrand pb on p.BrandID1 = pb.BrandID JOIN Prescription ps on ps.Brand_ID = pb.BrandID WHERE ps.BuyPrice < ? AND ps.PrescriptionName = ? ;", [price, prescription], function (err, result, fields) {
 		if (err) throw err;
 		res.end(JSON.stringify(result)); // Result in JSON format
 	});
