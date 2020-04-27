@@ -137,6 +137,57 @@ app.get('/prescriptionbrands', function (req, res) {;
    });
 
 
+//Create a prescription brand
+//Sample parameters below, used in filling in the required parameters listed
+//BrandName VARCHAR(50) NULL,
+//Description TEXT NULL,
+//Image
+//('Pfizer', 'an American multinational pharmaceutical corporation headquartered in New York City', NULL)
+//http://localhost:8000/addprescriptionbrand/withimage/:name/:description/:image
+app.post('/addprescriptionbrand/withimage/:name/:description/:image', async(req, res) => {
+  var brandName = req.param('name')
+  var descript = req.param('description')
+  var pic = req.param('image')
+  connection.query(`INSERT INTO PrescriptionBrand (BrandName, Description, Image) 
+  VALUES (?, ?, ?);`, [brandName, descript, pic], function (err, result, fields) {
+            if (err) throw err;
+            res.end(JSON.stringify(result)); // Result in JSON format
+       });
+  });
+
+//http://localhost:8000/addprescriptionbrand/withoutimage/:name/:description
+  app.post('/addprescriptionbrand/withoutimage/:name/:description', async(req, res) => {
+    var brandName = req.param('name')
+    var descript = req.param('description')
+    connection.query(`INSERT INTO PrescriptionBrand (BrandName, Description, Image) 
+    VALUES (?, ?, NULL);`, [brandName, descript], function (err, result, fields) {
+              if (err) throw err;
+              res.end(JSON.stringify(result)); // Result in JSON format
+         });
+    });
+
+//[DELETE] a prescription brand
+//http://localhost:8000/deleteprescriptionbrand/:name
+app.delete('/deleteprescriptionbrand/:name', async (req, res) => {
+	var prescriptionName = req.param('name')
+	connection.query("DELETE FROM PrescriptionBrand WHERE BrandName = ?;", prescriptionName,function (err, result, fields) {
+		if (err) 
+			return console.error(error.message);
+		res.end(JSON.stringify(result)); 
+	  });
+
+});
+
+//[READ] search for a prescription brand
+//http://localhost:8000/prescriptionbrand/search/:name
+app.get('/prescriptionbrand/search/:name', function (req, res) {
+  var search = req.param('name')
+  connection.query("Select * From PrescriptionBrand WHERE BrandName = ?;",search, function (err, result, fields) {
+        if (err) throw err; //Need to figure out how to add if doesn't exist
+        res.end(JSON.stringify(result)); // Result in JSON format
+    });
+  });
+
 ///////////////////////////////////////// PRESCRIPTION ////////////////////////////////////////////////
  //GET; return all of the Prescriptions
 //http://localhost:8000/prescriptions
