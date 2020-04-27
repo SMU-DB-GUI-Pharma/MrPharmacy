@@ -3,29 +3,30 @@ USE MrPharma;
 
 -- create Users table
 CREATE TABLE IF NOT EXISTS `MrPharma`.`User` (
-    `PinCode` INT NOT NULL AUTO_INCREMENT,
+    `PinCode` INT NOT NULL,
 	  PRIMARY KEY (PinCode),
     `Username` VARCHAR(45),
     `Password` VARCHAR(45),
     `TotalCostPrescriptions` DECIMAL(10,2) NOT NULL, 
     `MonthlyCost` DECIMAL(10,2) NOT NULL,
-    `FinancialReport` MEDIUMBLOB NULL
+    `FinancialReport` MEDIUMBLOB NULL,
+    `Insurance` NULL;
 );
 
 -- populate Users with dummy data
-INSERT INTO `MrPharma`.`User` (Username, Password, TotalCostPrescriptions, MonthlyCost, FinancialReport)
+INSERT INTO `MrPharma`.`User` (PinCode, Username, Password, TotalCostPrescriptions, MonthlyCost, FinancialReport)
 VALUES
-('throwerslug','password1', '100.00', '33.2', NULL),
-('gorebland','password2', '200.00', '11.04', NULL),
-('edenheight','password3',  '300.00', '08.77', NULL),
-('drugsarefun','password4', '250.00',  '10.04', NULL),
-('concoction','password5', '180.00', '09.44', NULL),
-('bigpharmacy','password6', '400.70',  '03.06', NULL),
-('bigpharmacy','password6', '400.70',  '03.06', NULL),
-('mypharm','password7',  '550.00', '08.99', NULL),
-('joe','password8', '50.00',  '08.20', NULL),
-('steve','password9', '80.00', '10.44', NULL),
-('larry','password10', '364.70',  '05.06', NULL);
+(1111, 'throwerslug','password1', '100.00', '33.2', NULL),
+(2222, 'gorebland','password2', '200.00', '11.04', NULL),
+(3333, 'edenheight','password3',  '300.00', '08.77', NULL),
+(4444, 'drugsarefun','password4', '250.00',  '10.04', NULL),
+(5555, 'concoction','password5', '180.00', '09.44', NULL),
+(6666, 'bigpharmacy','password6', '400.70',  '03.06', NULL),
+(7777, 'bigpharmacy','password6', '400.70',  '03.06', NULL),
+(8888, 'mypharm','password7',  '550.00', '08.99', NULL),
+(9999,'joe','password8', '50.00',  '08.20', NULL),
+(1110, 'steve','password9', '80.00', '10.44', NULL),
+(1112, 'larry','password10', '364.70',  '05.06', NULL);
 
 -- create Insurance table
 CREATE TABLE IF NOT EXISTS `MrPharma`.`Insurance` (
@@ -39,26 +40,19 @@ CREATE TABLE IF NOT EXISTS `MrPharma`.`Insurance` (
     `PostalCode` INT,
     `Country` VARCHAR(45),
     `PhoneNumber` BIGINT,
-    `Email` VARCHAR(45),
-    `Code_Pin` INT DEFAULT NULL,
-    FOREIGN KEY (Code_Pin) REFERENCES `MrPharma`.`User` (`PinCode`),
-    INDEX `PinCode_Index` (`Code_Pin`)
+    `Email` VARCHAR(45)
 );
 
 -- populate Insurance table with dummy data
 INSERT INTO `MrPharma`.`Insurance` 
-(Company, AddressLine1, AddressLine2, City, State, PostalCode, Country, PhoneNumber, Email, Code_Pin)
+(Company, AddressLine1, AddressLine2, City, State, PostalCode, Country, PhoneNumber, Email)
 VALUES
-('Blue Cross Blue Shield', '8364 Dyer Street', NULL, 'Dallas', 'Texas',  '75205', 'United States','4534126683', 'blue@email.com', 1),
-('Humana','1111 Krome Avenue', NULL,  'Miami', 'Florida', '33101', 'United States','2025550104', 'humana@email.com', 2),
-('UnitedHealth', '7434 Southampton Rd', '#2243','Minnetonka', 'Minnesota', '49009', 'United States', '7313741730', 'unitedhealth@email.com', 3),
-('California Physicians Service', '1 Old Golf Dr', NULL, 'Los Angeles', 'California', '90274', 'United States', '5639735475', 'cps@email.com', 4),
-('MetLife', '8845 Sycamore Lane', NULL,  'New York', 'New York', '60089',  'United States','3968131162', 'metro@email.com', 5),
-('Highmark Group', '35 North Mulberry Street', '#1001', ' Pittsburgh', 'Pennsylvania',  '37601', 'United States', '8462420038','highmark@email.com', 6),
-('Kaiser Foundation', '7030 S Yale Ave', '#600', 'Tulsa', 'Oklahoma', '74136', 'United States', '9183921612', 'kaiserhealth@email.com', 7),
-('Cigna Health', '1640 Dallas Pkwy', NULL, 'Plano', 'Texas', '75093', 'United States', '9724745638', 'cignahealth@email.com', 8),
-('Molina Healthcare', '5605 N MacArthur Blvd', '#400', 'Irving', 'Texas', '75038', 'United States', '2144376289', 'molina@email.com', 9),
-('Independence Health Group Inc', '1901 Market Street', NULL, 'Philadelphia', 'Pennyslvania', '19103', 'United States', '4125392254', 'independencehealth@email.com', 10);
+('Blue Cross Blue Shield', '8364 Dyer Street', NULL, 'Dallas', 'Texas',  '75205', 'United States','4534126683', 'blue@email.com'),
+('Humana','1111 Krome Avenue', NULL,  'Miami', 'Florida', '33101', 'United States','2025550104', 'humana@email.com'),
+('UnitedHealth', '7434 Southampton Rd', '#2243','Minnetonka', 'Minnesota', '49009', 'United States', '7313741730', 'unitedhealth@email.com'),
+('California Physicians Service', '1 Old Golf Dr', NULL, 'Los Angeles', 'California', '90274', 'United States', '5639735475', 'cps@email.com'),
+('MetLife', '8845 Sycamore Lane', NULL,  'New York', 'New York', '60089',  'United States','3968131162', 'metro@email.com'),
+('Highmark Group', '35 North Mulberry Street', '#1001', ' Pittsburgh', 'Pennsylvania',  '37601', 'United States', '8462420038','highmark@email.com');
 
 -- create Pharmacy table
 CREATE TABLE IF NOT EXISTS `MrPharma`.`Pharmacy` (
@@ -72,28 +66,29 @@ CREATE TABLE IF NOT EXISTS `MrPharma`.`Pharmacy` (
   `PostalCode` VARCHAR(50) NULL DEFAULT NULL,
   `Country` VARCHAR(50) NULL DEFAULT NULL,
   `Phone` VARCHAR(50) NOT NULL,
-  `InsuranceID` INT DEFAULT NULL,
+  `InsuranceID1` INT DEFAULT NULL,
+  `InsuranceID2` INT DEFAULT NULL,
   `Code_Pin` INT DEFAULT NULL,
-  FOREIGN KEY (`InsuranceID`) REFERENCES Insurance (`InsuranceID`),
-  INDEX InsuranceID_Index (`InsuranceID`),
   FOREIGN KEY (`Code_Pin`) REFERENCES MrPharma.User (`PinCode`),
   INDEX `PinCode_Index` (`Code_Pin`)
 );
 
 -- populate Pharmacy with dummy data
 INSERT INTO `MrPharma`.`Pharmacy` 
-(PharmacyName, AddressLine1, AddressLine2, City, State, PostalCode, Country,Phone, InsuranceID,Code_Pin)
+(PharmacyName, AddressLine1, AddressLine2, City, State, PostalCode, Country,Phone, InsuranceID1, InsuranceID2)
 VALUES
-('The Plano Pharmacy', '8364 Draper Street', NULL, 'Dallas', 'Texas', '75023', 'United States', '6505555787', 1, 1),
-('CVS','1111 Old Country Rd', 'Dallas', 'Texas', NULL, '75251', 'United States', '4155551450', 1, 2),
-('Walgreens', '38 University Avenue', NULL, 'Brookline', 'Massachusetts', '02446', 'United States', '2125557413', 1, 3),
-('Rite Aid','51 Stillwater Street', 'Yuma', 'Arizona', NULL, '85365', 'United States', '266427555', 2,  4),
-('Kaiser Permanente', '578 Trenton Dr', NULL, 'West Warwick', 'Rhode Island', '02893', 'United States','0395204555', 5,  5),
-('Thrive Apothecary','212 Carroll S', NULL, 'Fort Worth', 'Texas', '76107', 'United States','8174807098', 3,  6),
-('Baylor Scott & White Pharmacy', '3600 Gaston Ave', '#109', 'Dallas', 'Texas', '74246', 'United States', '2145328290', 3, 7),
-('Pride Pharmacy', '4015 Lemmon Ave', NULL, 'Dallas', 'Texas', '75219', 'United States', '2149547389', 8, 8),
-('Omega Pharmacy', '4507 Maple Ave', '#100', 'Dallas', 'Texas', '75219', 'United States', '2145998844', 2, 9),
-('SMU Health Center Pharmacy', '6004 Hillcrest Ave', NULL, 'Dallas', 'Texas', '75275', 'United States', '2147682149', 3, 10);
+('The Plano Pharmacy', '8364 Draper Street', NULL, 'Dallas', 'Texas', '75023', 'United States', '(650)555-5787', 1, 3),
+('CVS','1111 Old Country Rd', 'Dallas', 'Texas', NULL, '75251', 'United States', '(415)555-1450', 1, 5),
+('Walgreens', '38 University Avenue', NULL, 'Brookline', 'Massachusetts', '02446', 'United States', '(212)555-7413', 1, 4),
+('Rite Aid','51 Stillwater Street', 'Yuma', 'Arizona', NULL, '85365', 'United States', '(266)427-1923', 2, 6),
+('Kaiser Permanente', '578 Trenton Dr', NULL, 'West Warwick', 'Rhode Island', '02893', 'United States','(039)520-7382', 2, 3),
+('Thrive Apothecary','212 Carroll S', NULL, 'Fort Worth', 'Texas', '76107', 'United States','(817)480-7098', 3, 4),
+('Baylor Scott & White Pharmacy', '3600 Gaston Ave', '#109', 'Dallas', 'Texas', '74246', 'United States', '(214)532-8290', 3,5),
+('Pride Pharmacy', '4015 Lemmon Ave', NULL, 'Dallas', 'Texas', '75219', 'United States', '(214)954-7389', 4,6),
+('Omega Pharmacy', '4507 Maple Ave', '#100', 'Dallas', 'Texas', '75219', 'United States', '(214)599-8844', 5,4),
+('SMU Health Center Pharmacy', '6004 Hillcrest Ave', NULL, 'Dallas', 'Texas', '75275', 'United States', '(214)768-2149', 6,1),
+('Tom Thumb Pharmacy', '819 W Arapaho Rd', NULL, 'Richardson', 'Texas', '75080', 'United States', '(972)388-1037', 6,3);
+
 
 -- create user PrescriptionBrand table
 CREATE TABLE IF NOT EXISTS `MrPharma`.`PrescriptionBrand` (
@@ -164,4 +159,3 @@ VALUES
 
 -- -- flush them privileges
 -- FLUSH PRIVILEGES;
-

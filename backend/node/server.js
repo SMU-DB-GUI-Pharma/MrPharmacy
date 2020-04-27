@@ -74,13 +74,14 @@ app.get('/insurances', function (req, res) {
 });
 
 //User Story 3.3 [CREATE] - I want to be able to update my insurance information in my profile
+
 //http://localhost:8000/addInsurance/:pinCode?insuranceName=Molina Healthcare
 //http://localhost:8000/addInsurance/:pinCode?insuranceName=Blue Cross Blue Shield
-//replace ':pinCode' with PinCode from User table, replace everything after = to an InsuranceName
-app.put('/addInsurance/:pinCode', async (req, res) => {
-  var pincode = req.param('pinCode');
+//replace ':username' with username from User table, replace everything after = to an InsuranceName
+app.put('/updateInsurance/:username', async (req, res) => {
+  var username = req.param('username');
   var insuranceName = req.param('insuranceName');
-  connection.query("Update User SET Insurance = ? WHERE User.PinCode = ?;", [insuranceName,pincode], function (err, result, fields) {
+  connection.query("Update User SET Insurance = ? WHERE User.Username = ?;", [insuranceName,username], function (err, result, fields) {
     if (err) throw err;
 	  res.end(JSON.stringify(result)); // Result in JSON format
   });
@@ -89,11 +90,17 @@ app.put('/addInsurance/:pinCode', async (req, res) => {
 //User Story 6.3 [CREATE] I want to be given the option of adding my insurance
 //http://localhost:8000/addInsurance/:pinCode?insuranceName=UnitedHealth
 //replace ':pinCode' with PinCode from User table, replace everything after = to an InsuranceName
-app.post('/addInsurance/:pinCode', async (req, res) => {
-  var pincode = req.param('pinCode');
-  var insuranceName = req.param('insuranceName');
-  connection.query("ALTER TABLE User ADD Insurance varchar(45);") //adds new column to User table
-  connection.query("Update User SET Insurance = ? WHERE User.PinCode = ?;", [insuranceName,pincode], function (err, result, fields) {
+app.post('/addInsurance', async (req, res) => {
+  var company = req.param('company');
+  var address1 = req.param('address1');
+  var address2 = req.param('address2');
+  var city = req.param('city');
+  var state = req.param('state');
+  var postalCode = req.param('postalCode');
+  var country = req.param('country');
+  var phone = req.param('phone');
+  var email = req.param('email');
+  connection.query("Insert INTO Insurance (Company, AddressLine1, AddressLine2, City, State, PostalCode, Country, PhoneNumber,Email) VALUES (?, ?, ?, ? ,? ,?, ?, ?, ?)", [company, address1, address2, city, state, postalCode, country, phone, email], function (err, result, fields) {
     if (err) throw err;
 	  res.end(JSON.stringify(result)); // Result in JSON format
   });
@@ -121,7 +128,7 @@ app.get('/pharmacy', function (req, res) {
 });
 
 //User Story 5.2 [READ] - I want to be able to compare pharmacies (replace ':pharm#' with a PharmacyID)
-//http://localhost:8000/comparepharmacies/:pharm1/:pharm2/:pharm3
+//http://localhost:8000/comparepharmacy/:pharm1/:pharm2/:pharm3
 app.get('/comparepharmacy/:pharm1/:pharm2/:pharm3', function (req, res) {
   console.log("INSIDE compare pharmacy API CALL");
   var pharmacyName1 = req.param('pharm1');
@@ -146,23 +153,24 @@ app.get('/choosepharmacy/:pharmacy', function (req, res) {
 });
 
 //User Story 5.4 [READ] I want to be able to contact pharmacies (replace ':pharmacy' with a PharmacyName)
-//http://localhost:8000/contactpharmacy/:pharmacy
+//http://localhost:8000/contactpharmacy/:pharmacyName
 app.get('/contactpharmacy/:pharmacyName', function (req, res) {
-  console.log("INSIDE choose pharmacy API CALL");
-  var pharmacyName1 = req.param('pharmacy');
-  connection.query("SELECT Phone FROM `MrPharma`.`Pharmacy` WHERE PharmacyName = ? ;", [pharmacyName1], function (err, result, fields) {
+  console.log("INSIDE contact pharmacy API CALL");
+  var pharmacyName1 = req.param('pharmacyName');
+  connection.query("SELECT PharmacyName, Phone FROM `MrPharma`.`Pharmacy` WHERE PharmacyName = ? ;", [pharmacyName1], function (err, result, fields) {
 		if (err) throw err;
 		res.end(JSON.stringify(result)); // Result in JSON format
 	});
 });
 
-//User Story 5.5 [READ] I want to be able to search for pharmacies based on insurance accepted (replace ':insuranceID' with an InsuranceID #)
+//User Story 5.5 [READ] I want to be able to search for pharmacies based on insurance accepted (replace ':insuranceChoice#' with an InsuranceName)
 //refer to database schema to see which pharmacies match to which insurances
-//http://localhost:8000/searchpharmacies/:insuranceChoice
-app.get('/searchpharmacies/:insuranceID', function (req, res) {
+http://localhost:8000/searchpharmacies?insuranceChoice1=Humana&insuranceChoice2=UnitedHealth
+app.get('/searchpharmacies', function (req, res) {
   console.log("INSIDE filter pharmacy API CALL");
-  var insurance = req.param('insuranceID');
-  connection.query("SELECT ALL PharmacyName FROM `MrPharma`.`Pharmacy` WHERE InsuranceID = ? ;", insurance, function (err, result, fields) {
+  var insurance1 = req.param('insuranceChoice1');
+  var insurance2 = req.param('insuranceChoice2');
+  connection.query("SELECT DISTINCT p.PharmacyName FROM Pharmacy p JOIN  Insurance i on p.InsuranceID1 = i.InsuranceID join Insurance i2 on p.InsuranceID2 = i2.InsuranceID WHERE i.Company = ? OR i2.Company = ? ;", [insurance1, insurance2], function (err, result, fields) {
 		if (err) throw err;
 		res.end(JSON.stringify(result)); // Result in JSON format
 	});
