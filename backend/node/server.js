@@ -136,23 +136,65 @@ app.get('/logout',function(req,res){
             res.redirect('/');  
         }  
    });  
+});  
 
+//[DELETE] User account with pin code
+app.delete('/deleteUser/:pincode', function(req, res) {
+    var pincode = req.param('pincode');
+    connection.query("DELETE FROM User WHERE PinCode = ?", pincode,function (err, result, fields) {
+		if (err) 
+		return console.error(error.message);
 
-//[DELETE] Delete User account
-app.delete('/delete/:pin', function(req, res) {
-   console.log('Deleting a User');
-    var pincode = req.param('pin');
-    connection.query('DELETE FROM User WHERE PinCode = ?', pincode,
-        function(err, result, fields) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log('deleted: ' + result.affectedRows);
-                res.redirect('/');
-            }
+		res.end(JSON.stringify(result)); 
+	
+		
         });
-     });
 });
+
+//[UPDATE] I want to be able to update my monthly costs in advance
+app.put('/updateCost/:pincode', async (req, res) => {
+  var pincode = req.param('pincode');
+		connection.query("UPDATE User SET MonthlyCost = TotalCostPrescriptions/12 WHERE PinCode = ?",pincode, function (err, result, fields) {
+			if (err) throw err;
+			console.log(result);
+			res.end(JSON.stringify(result)); 
+	});
+	
+});
+
+//7.2 [READ] I want to be able to see my monthly costs in advance
+app.get('/Cost/:pincode', function (req, res) {
+var pincode = req.param('pincode');
+	connection.query('SELECT MonthlyCost FROM User WHERE PinCode = ?', pincode, function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
+
+//[UPDATE] I want to be able to update my total prescriptions cost
+app.put('/updateTotalCost/:pincode', async (req, res) => {
+  var pincode = req.param('pincode');
+        connection.query("SELECT SUM(buyPrice) as totalCost FROM Prescription WHERE Code_Pin = ?", pincode, function (err, result, fields) {
+	if (err) throw err;
+		connection.query("UPDATE User SET TotalCostPrescriptions = ? ", result[0].totalCost, function (err, result, fields) {
+			if (err) throw err;
+			console.log(result);
+			res.end(JSON.stringify(result)); 
+		});
+	});
+	
+});
+
+
+//7.1 [READ] I want to be able to see a running total of what I have spent on different prescriptions
+app.get('/TotalCost/:pincode', function (req, res) {
+var pincode = req.param('pincode');
+	connection.query('SELECT TotalCostPrescriptions FROM User WHERE PinCode = ?', pincode, function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
+
 
 
 //6.1 [CREATE] I want to set my own username and password

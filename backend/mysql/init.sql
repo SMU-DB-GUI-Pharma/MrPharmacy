@@ -7,20 +7,20 @@ CREATE TABLE IF NOT EXISTS `MrPharma`.`User` (
 	  PRIMARY KEY (PinCode),
     `Username` VARCHAR(45),
     `Password` VARCHAR(45),
-    `TotalCostPrescriptions` DECIMAL(10,2) NOT NULL DEFAULT '0.00', 
-    `MonthlyCost` DECIMAL(10,2) NOT NULL DEFAULT '0.00',
+    `TotalCostPrescriptions` DECIMAL(10,2) NOT NULL DEFAULT 0.00, 
+    `MonthlyCost` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     `FinancialReport` MEDIUMBLOB NULL
 );
 
 -- populate Users with dummy data
 INSERT INTO `MrPharma`.`User` (PinCode, Username, Password, TotalCostPrescriptions, MonthlyCost, FinancialReport)
 VALUES
-(1111, 'throwerslug','password1', '100.00', '33.2', NULL),
-(2222, 'gorebland','password2', '200.00', '11.04', NULL),
-(3333, 'edenheight','password3',  '300.00', '08.77', NULL),
-(4444, 'drugsarefun','password4', '250.00',  '10.04', NULL),
-(5555, 'concoction','password5', '180.00', '09.44', NULL),
-(6666, 'bigpharmacy','password6', '400.70',  '03.06', NULL);
+(1111, 'throwerslug','password1', 100.00, 33.2, NULL),
+(2222, 'gorebland','password2', 200.00, 11.04, NULL),
+(3333, 'edenheight','password3',  300.00, 08.77, NULL),
+(4444, 'drugsarefun','password4', 250.00,  10.04, NULL),
+(5555, 'concoction','password5', 180.00, 09.44, NULL),
+(6666, 'bigpharmacy','password6', 400.70,  03.06, NULL);
 
 -- create Insurance table
 CREATE TABLE IF NOT EXISTS `MrPharma`.`Insurance` (
