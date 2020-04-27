@@ -243,52 +243,6 @@ app.get('/values', (req, res) => {
   });
 });
 
-// // POST; For adding a user
-// app.post('/users', async (req, res) => {  
-// 	var querystring = `INSERT INTO User VALUES ('${con.escape(req.params.userName)}', '${con.escape(req.params.userPassword)}', '${con.escape(req.params.pinCode)}', '${con.escape(req.params.totalCostPrescriptions)}', '${con.escape(req.params.monthlyCost)}')`;
-// 	con.query(querystring, function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
-
-// // POST; for adding a pharmacy
-// app.post('/pharmacy', async (req, res) => {  
-// 	var querystring = `INSERT INTO pharmacy VALUES ('${con.escape(req.params.PharmacyName)}', '${con.escape(req.params.AddressLine1)}', '${con.escape(req.params.AddressLine2)}', '${con.escape(req.params.City)}', '${con.escape(req.params.State)}', '${con.escape(req.params.PostalCode)}', '${con.escape(req.params.Country)}', '${con.escape(req.params.Phone)}', '${con.escape(req.params.InsuranceID)}', '${con.escape(req.params.CodePin)}')`;
-// 	con.query(querystring, function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
-
-// // POST; for adding a pharmacy brand
-// app.post('/pharmacyBrand', async (req, res) => {  
-// 	var querystring = `INSERT INTO PharmacyBrand VALUES ('${con.escape(req.params.BrandName)}', '${con.escape(req.params.Description)}', '${con.escape(req.params.image)}')`;
-// 	con.query(querystring, function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
-
-// // POST; for adding a prescription
-// app.post('/prescription', async (req, res) => {  
-// 	var querystring = `INSERT INTO Prescription VALUES ('${con.escape(req.params.PrescriptionName)}', '${con.escape(req.params.StartDate)}', '${con.escape(req.params.isRefillable)}', '${con.escape(req.params.isRecurring)}', '${con.escape(req.params.PrescriptionDescription)}', '${con.escape(req.params.Comments)}', '${con.escape(req.params.BrandName)}', '${con.escape(req.params.EndDate)}', '${con.escape(req.params.BuyPrice)}', '${con.escape(req.params.RefillDate)}', '${con.escape(req.params.RefillCount)}', '${con.escape(req.params.PausePrescription)}', '${con.escape(req.params.code_pin)}')`;
-// 	con.query(querystring, function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
-
-// // POST; for adding an insurance
-// app.post('/insurance', async (req, res) => {  
-// 	var querystring = `INSERT INTO Insurance VALUES ('${con.escape(req.params.Company)}', '${con.escape(req.params.AddressLine1)}', '${con.escape(req.params.AddressLine2)}', '${con.escape(req.params.City)}', '${con.escape(req.params.State)}', '${con.escape(req.params.PostalCode)}', '${con.escape(req.params.Country)}', '${con.escape(req.params.PhoneNumber)}', '${con.escape(req.params.Email)}', '${con.escape(req.params.code_pin)}')`;
-// 	con.query(querystring, function (err, result, fields) {
-// 		if (err) throw err;
-// 		res.end(JSON.stringify(result)); // Result in JSON format
-// 	});
-// });
-
-
 //connecting the express object to listen on a particular port as defined in the config object.
 app.listen(config.port, config.host, (e) => {
   if (e) {
