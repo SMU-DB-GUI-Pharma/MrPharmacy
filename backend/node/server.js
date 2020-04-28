@@ -237,7 +237,7 @@ app.post('/prescription/addnonrecurring/:name/:startdate/:isrefillable/:descript
 //to be designated as a past prescription
 //http://localhost:8000/prescriptionOutOfUse
 app.get('/prescriptionOutOfUse', function (req, res) {
-  connection.query("Select * from Prescription WHERE isRefillable = 0 AND EndDate < '2020-04-25';", function (err, result, fields) {
+  connection.query("Select * from Prescription WHERE isRefillable = 0 AND EndDate < CURDATE();", function (err, result, fields) {
       if (err) throw err;
       res.end(JSON.stringify(result)); // Result in JSON format
   });
@@ -544,7 +544,7 @@ app.get('/refillables', function (req, res) {
 // 3.2 I want a prescription that is about to run out to be able to be distinguished from the others
 //http://localhost:8000/refillables
 app.get('/prescriptiondistinguishrunout', function (req, res) {
-    connection.query("Select * From Prescription Order by RefillDate asc, EndDate asc;", function (err, result, fields) {
+    connection.query("Select * From Prescription  WHERE EndDate < (CURDATE() + 14) Order by RefillDate asc, EndDate asc;", function (err, result, fields) {
           if (err) throw err; //Need to figure out how to add if doesn't exist
           res.end(JSON.stringify(result)); // Result in JSON format
       });
