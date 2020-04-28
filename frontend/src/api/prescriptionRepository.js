@@ -11,7 +11,7 @@ export class PrescriptionRepository {
   //     return new Promise((resolve, reject) => {
   //       axios
   //         .get(
-  //           `https://jsonplaceholder.typicode.com/users`,
+  //           `${this.url}/prescriptions`,
   //           username,
   //           sorting,
   //           isExpired,
@@ -38,7 +38,7 @@ export class PrescriptionRepository {
   getPrescriptions() {
     return new Promise((resolve, reject) => {
       axios
-        .get(`https://jsonplaceholder.typicode.com/users`, this.config)
+        .get(`${this.url}/prescriptions`, this.config)
         .then((x) => resolve(x.data))
         .catch((x) => {
           alert(x);
@@ -109,5 +109,29 @@ export class PrescriptionRepository {
         //FIXME: swap the prescription with new prescirption
       });
     }
+  }
+
+  getPrescriptionsByDate() {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(`${this.url}/prescriptionSortByAddDate`, this.config)
+        .then((x) => resolve(x.data))
+        .catch((x) => {
+          alert(x);
+          reject(x);
+        });
+    });
+  }
+
+  getPrescriptionsByReccuring() {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(`${this.url}/prescriptionShowRecurring`, this.config)
+        .then((x) => resolve(x.data))
+        .catch((x) => {
+          alert(x);
+          reject(x);
+        });
+    });
   }
 }

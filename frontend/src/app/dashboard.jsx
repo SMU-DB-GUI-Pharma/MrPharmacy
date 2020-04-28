@@ -13,17 +13,57 @@ export class DashBoard extends React.Component {
 
   onSorting(prescirotionId, sortingId) {
     if (prescirotionId === 0) {
-      this.prescriptionRepository
-        .getCurrentPrescription(sortingId)
-        .then((prescriptions) =>
-          this.setState({ currentPrescriptions: prescriptions })
-        );
+      if (sortingId == 0) {
+        this.prescriptionRepository
+          .getPrescriptionsByReccuring()
+          .then((prescriptions) =>
+            this.setState({ currentPrescriptions: prescriptions })
+          );
+      } else if (sortingId == 2) {
+        this.prescriptionRepository
+          .getPrescriptionsByDate()
+          .then((prescriptions) =>
+            this.setState({ currentPrescriptions: prescriptions })
+          );
+      } else if (sortingId == 3) {
+        this.prescriptionRepository
+          .getPrescriptionsByDate()
+          .then((prescriptions) =>
+            this.setState({ currentPrescriptions: prescriptions.reverse() })
+          );
+      } else {
+        this.prescriptionRepository
+          .getCurrentPrescription(sortingId)
+          .then((prescriptions) =>
+            this.setState({ currentPrescriptions: prescriptions })
+          );
+      }
     } else {
-      this.prescriptionRepository
-        .getPastPrescription(sortingId)
-        .then((prescriptions) =>
-          this.setState({ currentPrescriptions: prescriptions })
-        );
+      if (sortingId == 0) {
+        this.prescriptionRepository
+          .getPrescriptionsByReccuring()
+          .then((prescriptions) =>
+            this.setState({ currentPrescriptions: prescriptions })
+          );
+      } else if (sortingId == 2) {
+        this.prescriptionRepository
+          .getPrescriptionsByDate()
+          .then((prescriptions) =>
+            this.setState({ currentPrescriptions: prescriptions })
+          );
+      } else if (sortingId == 3) {
+        this.prescriptionRepository
+          .getPrescriptionsByDate()
+          .then((prescriptions) =>
+            this.setState({ currentPrescriptions: prescriptions.reverse() })
+          );
+      } else {
+        this.prescriptionRepository
+          .getPastPrescription(sortingId)
+          .then((prescriptions) =>
+            this.setState({ currentPrescriptions: prescriptions })
+          );
+      }
     }
   }
 

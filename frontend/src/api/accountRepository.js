@@ -9,11 +9,7 @@ export class AccountRepository {
   logIn(credential) {
     return new Promise((resolve, reject) => {
       axios
-        .get(
-          "placeholder for user data endpoint",
-          credential.username,
-          this.config
-        )
+        .post(`${this.url}/login`, credential.username, this.config)
         .then((x) => {
           if (x.data.password === credential.password) {
             resolve(x.data);
@@ -42,7 +38,7 @@ export class AccountRepository {
     if (!window.isLocal) {
       return new Promise((resolve, reject) => {
         axios
-          .post("placeholder for user data endpoint", user, this.config)
+          .post(`${this.url}/register`, user, this.config)
           .then((x) => resolve(x.data))
           .catch((x) => {
             alert(x);
