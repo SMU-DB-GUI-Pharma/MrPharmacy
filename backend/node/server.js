@@ -175,12 +175,23 @@ app.get('/searchpharmacies', function (req, res) {
 });
 
 //User Story 5.5 [READ] I want to be able to search for pharmacies based on price of prescriptions (replace ':price' with a price and ':prescription' with a PrescriptionName)
-http://localhost:8000/searchpharmacies/:price/:prescription
+// http://localhost:8000/searchpharmacies/:price/:prescription
 app.get('/searchpharmacies/:price/:prescription', function (req, res) {
   console.log("inside filter price API call");
   var price = req.param('price');
   var prescription = req.param('prescription');
-  connection.query("SELECT DISTINCT p.PharmacyName, ps.PrescriptionName FROM Pharmacy p JOIN PrescriptionBrand pb on p.BrandID1 = pb.BrandID JOIN Prescription ps on ps.Brand_ID = pb.BrandID WHERE ps.BuyPrice < ? AND ps.PrescriptionName = ? ;", [price, prescription], function (err, result, fields) {
+  connection.query("SELECT DISTINCT p.PharmacyName, ps.PrescriptionName, ps.BuyPrice FROM Pharmacy p JOIN PrescriptionBrand pb on p.BrandID1 = pb.BrandID JOIN Prescription ps on ps.Brand_ID = pb.BrandID WHERE ps.BuyPrice < ? AND ps.PrescriptionName = ? ;", [price, prescription], function (err, result, fields) {
+		if (err) throw err;
+		res.end(JSON.stringify(result)); // Result in JSON format
+	});
+});
+
+//User Story 5.5 [READ] I want to be able to search for prescription based on pharmacy (replace ':prescription' with a PrescriptionName)
+//http://localhost:8000/searchpharmacies/:prescription
+app.get('/searchpharmacies/:prescription', function (req, res) {
+  console.log("inside filter prescription API call");
+  var prescription = req.param('prescription');
+  connection.query("select p.PharmacyName, ps.PrescriptionName from Pharmacy p inner join PrescriptionBrand pb on p.BrandID1 = pb.BrandID inner join PrescriptionBrand pb2 on p.BrandID2 = pb2.BrandID inner join PrescriptionBrand pb3 on p.BrandID3 = pb3.BrandID inner join Prescription ps on ps.Brand_ID = pb.BrandID OR ps.Brand_ID = pb2.BrandID OR ps.Brand_ID = pb3.BrandID WHERE ps.PrescriptionName = ? ;", [prescription], function (err, result, fields) {
 		if (err) throw err;
 		res.end(JSON.stringify(result)); // Result in JSON format
 	});
